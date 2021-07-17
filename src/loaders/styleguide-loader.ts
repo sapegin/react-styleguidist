@@ -89,14 +89,14 @@ export function pitch(this: Rsg.StyleguidistLoaderContext) {
 	 * }
 	 * ```
 	 *
-	 * because we have to account for ES module exports,
-	 * we add an extra step and transform it into aa statement
-	 * that can import es5 `module.exports` and ES modules `export default`
+	 * because we have to account for ECMAScript module exports,
+	 * we add an extra step and transform it into a statement that can import
+	 * CommonJS `module.exports` and ECMAScript modules `export default`
 	 *
-	 * so the code will ultimtely look like this
+	 * So the code will ultimately look like this:
 	 *
 	 * ```
-	 * // es5 - es modules compatibility code
+	 * // CommonJS → ECMAScript modules compatibility code
 	 * var obj$0 = require('test/path')
 	 * var obj = obj$0.default || obj$0
 	 *

@@ -45,7 +45,9 @@ it('should extract doclets', () => {
 	expect(result).toMatch('getImageUrl');
 	expect(result).toMatch(/'see': '\{@link link\}'/);
 	expect(result).toMatch(/'link': 'link'/);
-	expect(result).toMatch(/require\('!!.*?\/loaders\/examples-loader\.js!\.\/examples.md'\)/);
+	expect(result).toMatch(
+		/require\('!!.*?\/loaders\/mdx-loader\.js\?component=.%2FPlaceholder\.js!\.\/examples.md'\)/
+	);
 });
 
 describe('property sorting', () => {
@@ -130,7 +132,7 @@ it('should work with JSDoc annnotated components', () => {
 	expect(eval(result)).toEqual(
 		expect.objectContaining({
 			displayName: 'Annotation',
-			description: 'Styled-component test\n',
+			description: '\nStyled-component test',
 			doclets: {
 				component: true,
 			},
@@ -166,7 +168,7 @@ it('should attach examples from Markdown file', () => {
 
 	expect(() => new vm.Script(result)).not.toThrow();
 	expect(result).toMatch(
-		/require\('!!.*?\/loaders\/examples-loader\.js\?displayName=Button&file=\.%2FButton\.js&shouldShowDefaultExample=false!test\/components\/Button\/Readme\.md'\)/
+		/require\('!!.*?\/loaders\/mdx-loader\.js\?component=\.%2FButton\.js!test\/components\/Button\/Readme\.md'\)/
 	);
 });
 

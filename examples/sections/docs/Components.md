@@ -4,6 +4,6 @@ Ut veniam sit pariatur deserunt non officia. Esse commodo proident quis culpa es
 
 List of components:
 
-- [Buttons](#/Components?id=section-buttons)
-- [Fields](#/Components?id=section-fields)
-- [Others](#/Components?id=section-others)
+- [Buttons](#/Components/Buttons)
+- [Fields](#/Components/Fields)
+- [Others](#/Components/Others)

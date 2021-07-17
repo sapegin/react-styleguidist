@@ -1,4 +1,3 @@
-import './dependencies/acorn-jsx';
 import './dependencies/findup';
 import './dependencies/listify';
 import './dependencies/react-docgen';
@@ -9,7 +8,6 @@ import './dependencies/strip-shebang';
 import './dependencies/deabsdeep';
 import './dependencies/glogg';
 import './dependencies/mini-html-webpack-template';
-import './dependencies/stripHtmlComments';
 import './dependencies/deepfreeze';
 import './dependencies/is-directory';
 import './dependencies/q-i';
@@ -22,3 +20,4 @@ export * from './RsgRequireItResult';
 export * from './RsgSection';
 export * from './RsgStyleguidistConfig';
 export * from './RsgTheme';
+export * from './RsgTOCItem';

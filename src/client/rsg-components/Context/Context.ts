@@ -1,4 +1,5 @@
 import React from 'react';
+import { Slot } from '../slots';
 import * as Rsg from '../../../typings';
 
 const StyleGuideContext = React.createContext<StyleGuideContextContents>({
@@ -6,22 +7,19 @@ const StyleGuideContext = React.createContext<StyleGuideContextContents>({
 	cssRevision: '0',
 	config: {} as Rsg.ProcessedStyleguidistConfig,
 	slots: {},
-	displayMode: 'collapse',
+	isolated: false,
+	exampleIndex: undefined,
 });
 
 export default StyleGuideContext;
-
-export interface SlotObject {
-	id: string;
-	render: React.FunctionComponent<any>;
-}
 
 export interface StyleGuideContextContents {
 	codeRevision: number;
 	cssRevision: string;
 	config: Rsg.ProcessedStyleguidistConfig;
-	slots: Record<string, (SlotObject | React.FunctionComponent<any>)[]>;
-	displayMode: string;
+	slots: Record<string, Slot[]>;
+	isolated: boolean;
+	exampleIndex?: number | string;
 }
 
 export function useStyleGuideContext(): StyleGuideContextContents {

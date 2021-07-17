@@ -6,7 +6,6 @@ module.exports = {
 	styleguideComponents: {
 		Wrapper: path.join(__dirname, 'src/StyleGuideWrapper'),
 	},
-	defaultExample: true,
 	moduleAliases: {
 		'rsg-example': path.resolve(__dirname, 'src'),
 	},

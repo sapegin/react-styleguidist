@@ -9,16 +9,16 @@ const styles = () => ({
 
 interface ExamplesRendererProps extends JssInjectedProps {
 	children?: React.ReactNode;
-	name?: string;
+	componentName?: string;
 }
 
 export const ExamplesRenderer: React.FunctionComponent<ExamplesRendererProps> = ({
 	classes,
-	name,
+	componentName,
 	children,
 }) => {
 	return (
-		<article className={classes.root} data-testid={`${name}-examples`}>
+		<article className={classes.root} data-testid={`${componentName}-examples`}>
 			{children}
 		</article>
 	);
@@ -26,7 +26,7 @@ export const ExamplesRenderer: React.FunctionComponent<ExamplesRendererProps> = 
 
 ExamplesRenderer.propTypes = {
 	classes: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
-	name: PropTypes.string.isRequired,
+	componentName: PropTypes.string.isRequired,
 	children: PropTypes.node,
 };
 

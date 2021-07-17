@@ -29,7 +29,7 @@ const styles = ({ color, fontSize, space }: Rsg.Theme) => ({
 });
 
 interface ReactComponentRendererProps extends JssInjectedProps {
-	name: string;
+	componentName: string;
 	heading: React.ReactNode;
 	filepath?: string;
 	slug?: string;
@@ -44,7 +44,7 @@ interface ReactComponentRendererProps extends JssInjectedProps {
 
 export const ReactComponentRenderer: React.FunctionComponent<ReactComponentRendererProps> = ({
 	classes,
-	name,
+	componentName,
 	heading,
 	pathLine,
 	description,
@@ -54,7 +54,7 @@ export const ReactComponentRenderer: React.FunctionComponent<ReactComponentRende
 	tabBody,
 }) => {
 	return (
-		<div className={classes.root} data-testid={`${name}-container`}>
+		<div className={classes.root} data-testid={`${componentName}-container`}>
 			<header className={classes.header}>
 				{heading}
 				{pathLine && <Pathline>{pathLine}</Pathline>}
@@ -78,7 +78,7 @@ export const ReactComponentRenderer: React.FunctionComponent<ReactComponentRende
 
 ReactComponentRenderer.propTypes = {
 	classes: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
-	name: PropTypes.string.isRequired,
+	componentName: PropTypes.string.isRequired,
 	heading: PropTypes.node.isRequired,
 	filepath: PropTypes.string,
 	pathLine: PropTypes.string,

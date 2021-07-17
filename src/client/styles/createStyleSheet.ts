@@ -2,8 +2,7 @@ import merge from 'lodash/merge';
 import memoize from 'lodash/memoize';
 import { Styles, StyleSheet } from 'jss';
 import jss from './setupjss';
-import * as theme from './theme';
-import { RecursivePartial } from '../../typings/RecursivePartial';
+import getMergedTheme from './getMergedTheme';
 import * as Rsg from '../../typings';
 
 /**
@@ -23,11 +22,7 @@ export default memoize(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		cssRevision: string
 	): StyleSheet<string> => {
-		const mergedTheme = merge<RecursivePartial<Rsg.Theme>, Rsg.Theme, RecursivePartial<Rsg.Theme>>(
-			{},
-			theme,
-			config.theme
-		);
+		const mergedTheme = getMergedTheme(config.theme);
 
 		const customStyles =
 			typeof config.styles === 'function' ? config.styles(mergedTheme) : config.styles;

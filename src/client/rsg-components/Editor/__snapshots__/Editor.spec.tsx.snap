@@ -6,7 +6,7 @@ exports[`Editor should renderer and editor 1`] = `
   ignoreTabKey={false}
   insertSpaces={true}
   onValueChange={[Function]}
-  padding={16}
+  padding={0}
   tabSize={2}
   value=<button>
   MyAwesomeCode

@@ -22,11 +22,12 @@ Webpack loaders (see below) generate JavaScript modules with all user components
 
 ## Webpack loaders and webpack configuration
 
-We use webpack loaders to hot reload the style guide on changes in user components, styles and Markdown documentation. We have three loaders ([loaders](https://github.com/styleguidist/react-styleguidist/tree/master/src/loaders) folder):
+We use webpack loaders to hot reload the style guide on changes in user components, styles and Markdown documentation. We have four loaders ([`loaders`](https://github.com/styleguidist/react-styleguidist/tree/master/src/loaders) folder):
 
 - `styleguide-loader`: loads components and sections;
-- `props-loaders`: loads props documentation using react-docgen;
-- `examples-loader`: loads examples from Markdown files;
+- `props-loader`: loads props documentation using react-docgen;
+- `mdx-loader`: loads examples from Markdown and Mdx files;
+- `stories-loader`: loads examples from CSF files and provide them to mdx-loader;
 
 Styleguidist tries to load and reuse the user’s webpack config (`webpack.config.js` in project root folder). It works most of the time but has some restrictions: Styleguidist [ignores](https://github.com/styleguidist/react-styleguidist/blob/master/src/scripts/utils/mergeWebpackConfig.js) some fields and plugins because they are already included (like `webpack.HotModuleReplacementPlugin`), don’t make sense for a style guide (like `output`) or may break Styleguidist (like `entry`).
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useStyleGuideContext, SlotObject } from 'rsg-components/Context';
+import { useStyleGuideContext } from 'rsg-components/Context';
 
 interface SlotProps {
 	name: string;
@@ -25,10 +25,10 @@ export default function Slot({ name, active, onlyActive, className, props = {} }
 	}
 
 	const rendered = fills.map((Fill, index) => {
-		// { id: 'pizza', render: ({ foo }) => <div>{foo}</div> }
-		const { id, render } = Fill as SlotObject;
 		let fillProps = props;
-		if (id && render) {
+		if ('id' in Fill && 'render' in Fill) {
+			// { id: 'pizza', render: ({ foo }) => <div>{foo}</div> }
+			const { id, render } = Fill;
 			// Render only specified fill
 			if (onlyActive && id !== active) {
 				return null;
@@ -47,8 +47,7 @@ export default function Slot({ name, active, onlyActive, className, props = {} }
 			const Render = render;
 			return <Render key={index} {...fillProps} />;
 		}
-		const FillAsComponent = Fill as React.FunctionComponent<any>;
-		return <FillAsComponent key={index} {...fillProps} />;
+		return <Fill key={index} {...fillProps} />;
 	});
 
 	const filtered = rendered.filter(Boolean);

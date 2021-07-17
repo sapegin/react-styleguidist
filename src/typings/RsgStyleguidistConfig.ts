@@ -35,7 +35,8 @@ interface BaseStyleguidistConfig {
 	contextDependencies: string[];
 	configureServer(server: Application, env: Mode): string;
 	dangerouslyUpdateWebpackConfig: (config: Configuration, env: Mode) => Configuration;
-	defaultExample: string | false;
+	/** @deprecated */
+	defaultExample: unknown;
 	exampleMode: ExpandMode;
 	editorConfig: {
 		theme: string;
@@ -81,10 +82,10 @@ interface BaseStyleguidistConfig {
 	styleguideDir: string;
 	styles: Styles | string | ((theme: Theme) => Styles);
 	template: any; // TODO
-	theme: RecursivePartial<Theme> | string;
+	theme: RecursivePartial<Theme> /*| string */; // TODO
 	title: string;
 	updateDocs(doc: PropsObject, file: string): PropsObject;
-	updateExample(props: Omit<CodeExample, 'type'>, ressourcePath: string): Omit<CodeExample, 'type'>;
+	updateExample(example: CodeExample, resourcePath: string): Omit<CodeExample, 'type'>;
 	updateWebpackConfig(config: Configuration): Configuration;
 	usageMode: ExpandMode;
 	verbose: boolean;
@@ -106,11 +107,6 @@ export interface SanitizedStyleguidistConfig extends BaseStyleguidistConfig {
 }
 
 /**
- * definition of the config object where everything is optional
- * note that teh default example can be both a string and a boolean but ends
- * up only being a string after sanitizing
+ * Config object where everything is optional
  */
-export interface StyleguidistConfig
-	extends RecursivePartial<Omit<SanitizedStyleguidistConfig, 'defaultExample'>> {
-	defaultExample?: string | boolean;
-}
+export type StyleguidistConfig = RecursivePartial<SanitizedStyleguidistConfig>;

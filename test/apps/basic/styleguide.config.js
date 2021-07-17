@@ -4,7 +4,6 @@ const dir = path.resolve(__dirname, 'lib');
 
 module.exports = {
 	title: 'React Style Guide Example',
-	defaultExample: true,
 	components: './components/**/[A-Z]*.js',
 	webpackConfig: {
 		module: {

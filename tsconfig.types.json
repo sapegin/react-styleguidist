@@ -1,15 +1,18 @@
 {
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		// only generate typings when using this tsconfig
-		"declaration": true
-	},
-	// avoid generating typings for tests and mocks
-	"exclude": [
-		"node_modules",
-		"**/__tests__/*.ts",
-		"**/__mocks__/*.ts",
-		"**/*.spec.tsx",
-		"**/*.spec.ts"
-	]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // only generate typings when using this tsconfig
+    "declaration": true
+  },
+  // ignore the dangerfile in calculation of the root folder
+  "files": [],
+  // avoid generating typings for tests and mocks
+  "exclude": [
+    "dangerfile.ts",
+    "node_modules",
+    "**/__tests__/*.ts",
+    "**/__mocks__/*.ts",
+    "**/*.spec.tsx",
+    "**/*.spec.ts"
+  ]
 }

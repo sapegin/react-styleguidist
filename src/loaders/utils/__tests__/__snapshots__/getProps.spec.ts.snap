@@ -143,8 +143,7 @@ Object {
 
 exports[`should not crash when using doctrine to parse a default prop that isn't in the props list 1`] = `
 Object {
-  "description": "The only true button.
-",
+  "description": "The only true button.",
   "displayName": "",
   "doclets": Object {},
   "methods": Array [],
@@ -181,8 +180,7 @@ Object {
 
 exports[`should return an object for props 1`] = `
 Object {
-  "description": "The only true button.
-",
+  "description": "The only true button.",
   "displayName": "Button",
   "doclets": Object {},
   "methods": Array [],
@@ -212,7 +210,10 @@ Object {
 
 exports[`should return an object for props with doclets 1`] = `
 Object {
-  "description": "The only true button.
+  "description": "
+The only true button.
+
+
 ",
   "displayName": "Button",
   "doclets": Object {
@@ -259,7 +260,9 @@ Object {
 
 exports[`should return require statement for @example doclet 1`] = `
 Object {
-  "description": "The only true button.
+  "description": "
+The only true button.
+
 ",
   "displayName": "Button",
   "doclets": Object {
@@ -280,7 +283,9 @@ Object {
 
 exports[`should return require statement for @example doclet only when the file exists 1`] = `
 Object {
-  "description": "The only true button.
+  "description": "
+The only true button.
+
 ",
   "displayName": "Button",
   "doclets": Object {

@@ -110,9 +110,7 @@ Try to install it: npm install --save-dev ${value}`
 	},
 	defaultExample: {
 		type: ['boolean', 'existing file path'],
-		default: false,
-		process: (val: boolean | string): string | boolean =>
-			val === true ? path.resolve(__dirname, '../../../templates/DefaultExample.md') : val,
+		deprecated: 'Default example is no longer supported',
 	},
 	exampleMode: {
 		type: 'string',
@@ -155,6 +153,8 @@ Try to install it: npm install --save-dev ${value}`
 			'**/__tests__/**',
 			`**/*.test.{${EXTENSIONS}}`,
 			`**/*.spec.{${EXTENSIONS}}`,
+			`**/*.stories.{${EXTENSIONS}}`,
+			`**/*.story.{${EXTENSIONS}}`,
 			'**/*.d.ts',
 		],
 	},
@@ -349,6 +349,7 @@ Try to install it: npm install --save-dev ${value}`
 	},
 	updateExample: {
 		type: 'function',
+		// TODO: We don't need this anymore
 		default: (props: { lang: string }): { lang: string } => {
 			if (props.lang === 'example') {
 				props.lang = 'js';

@@ -1,10 +1,10 @@
 import path from 'path';
 import fs from 'fs';
+import { encode } from 'qss';
 import { TagProps, TagParamObject, DocumentationObject, utils, TagObject } from 'react-docgen';
 import _ from 'lodash';
 import doctrine, { Annotation } from 'doctrine';
 import createLogger from 'glogg';
-import highlightCodeInMarkdown from './highlightCodeInMarkdown';
 import removeDoclets from './removeDoclets';
 import requireIt from './requireIt';
 import getNameFromFilePath from './getNameFromFilePath';
@@ -12,7 +12,7 @@ import * as Rsg from '../../typings';
 
 const logger = createLogger('rsg');
 
-const examplesLoader = path.resolve(__dirname, '../examples-loader.js');
+const mdxLoader = path.resolve(__dirname, '../mdx-loader.js');
 
 const JS_DOC_METHOD_PARAM_TAG_SYNONYMS: (keyof TagProps)[] = ['param', 'arg', 'argument'];
 const JS_DOC_METHOD_RETURN_TAG_SYNONYMS: (keyof TagProps)[] = ['return', 'returns'];
@@ -49,7 +49,7 @@ const getMergedTag = (tags: TagProps, names: (keyof TagProps)[]): TagObject[] =>
  * 1. Remove non-public methods.
  * 2. Extract doclets.
  * 3. Highlight code in descriptions.
- * 4. Extract @example doclet (load linked file with examples-loader).
+ * 4. Extract @example doclet (load linked file with mdx-loader).
  *
  * @param {object} doc
  * @param {string} filepath
@@ -59,7 +59,7 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 	const outDocs: Rsg.TempPropsObject = { doclets: {}, displayName: '', ...doc, methods: undefined };
 
 	// Keep only public methods
-	outDocs.methods = (doc.methods || []).filter(method => {
+	outDocs.methods = (doc.methods || []).filter((method) => {
 		const doclets = method.docblock && utils.docblock.getDoclets(method.docblock);
 		return doclets && doclets.public;
 	}) as Rsg.MethodWithDocblock[];
@@ -67,7 +67,7 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 	// Parse the docblock of the remaining methods with doctrine to retrieve
 	// the JSDoc tags
 	// if a method is visible it must have a docblock
-	outDocs.methods = outDocs.methods.map(method => {
+	outDocs.methods = outDocs.methods.map((method) => {
 		const allTags = getDoctrineTags(
 			doctrine.parse(method.docblock, { sloppy: true, unwrap: true })
 		);
@@ -81,9 +81,9 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 		) as TagParamObject[];
 		const params =
 			method.params &&
-			method.params.map(param => ({
+			method.params.map((param) => ({
 				...param,
-				...paramTags.find(tagParam => tagParam.name === param.name),
+				...paramTags.find((tagParam) => tagParam.name === param.name),
 			}));
 
 		if (params) {
@@ -121,7 +121,7 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 		const documentation = doctrine.parse(doc.description);
 		outDocs.tags = getDoctrineTags(documentation) as TagProps;
 
-		outDocs.description = highlightCodeInMarkdown(removeDoclets(doc.description));
+		outDocs.description = removeDoclets(doc.description);
 
 		let exampleFileExists = false;
 		let exampleFile = outDocs.doclets.example;
@@ -132,8 +132,15 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 			exampleFileExists = doesExternalExampleFileExist(filepath, exampleFile);
 		}
 
-		if (exampleFileExists) {
-			outDocs.example = requireIt(`!!${examplesLoader}!${exampleFile}`);
+		// Overwrite any existing `content` with the content from the
+		// @example JSDdoc tag
+		if (exampleFileExists && filepath) {
+			const exampleFilepath = path.resolve(path.dirname(filepath), exampleFile);
+			const component = `./${path.relative(path.dirname(exampleFilepath), filepath)}`;
+			const query = {
+				component,
+			};
+			outDocs.content = requireIt(`!!${mdxLoader}?${encode(query)}!${exampleFile}`);
 			delete outDocs.doclets.example;
 		}
 	} else {
@@ -142,7 +149,7 @@ export default function getProps(doc: DocumentationObject, filepath?: string): R
 
 	if (doc.props) {
 		// Read doclets of props
-		Object.keys(doc.props).forEach(propName => {
+		Object.keys(doc.props).forEach((propName) => {
 			if (!doc.props) {
 				return;
 			}

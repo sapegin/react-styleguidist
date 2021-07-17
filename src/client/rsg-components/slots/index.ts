@@ -8,10 +8,17 @@ import * as Rsg from '../../../typings';
 export const EXAMPLE_TAB_CODE_EDITOR = 'rsg-code-editor';
 export const DOCS_TAB_USAGE = 'rsg-usage';
 
+export type Slot =
+	| React.ComponentType<any>
+	| {
+			id: string;
+			render: React.ComponentType<any>;
+	  };
+
 const toolbar = [IsolateButton];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default (config?: Rsg.ProcessedStyleguidistConfig) => {
+export default (config?: Rsg.ProcessedStyleguidistConfig): Record<string, Slot[]> => {
 	return {
 		sectionToolbar: toolbar,
 		componentToolbar: toolbar,

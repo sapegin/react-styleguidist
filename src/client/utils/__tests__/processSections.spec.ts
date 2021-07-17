@@ -1,49 +1,78 @@
 import deepfreeze from 'deepfreeze';
 import processSections from '../processSections';
+import * as Rsg from '../../../typings';
 
-const sections = deepfreeze([
+const sectionsRaw: Rsg.RawSection[] = [
 	{
+		slug: 'section-untitiled',
+		exampleMode: 'collapse',
 		sections: [
 			{
+				exampleMode: 'collapse',
 				name: 'Components',
 				slug: 'components',
+				sections: [],
 				components: [
 					{
 						slug: 'button',
+						filepath: './button.tsx',
+						pathLine: '',
+						hasExamples: false,
 						props: {
 							displayName: 'Button',
 						},
+						metadata: {},
 					},
 				],
 			},
 		],
+		components: [],
 	},
-]);
-
-const options = { useRouterLinks: false, hashPath: [] };
+];
+const sections = deepfreeze(sectionsRaw);
 
 describe('processSections', () => {
-	test('should recursively process all sections and components', () => {
-		const result = processSections(sections, options);
-		const sectionsExpected = result[0].sections || [];
-		const comp = sectionsExpected.length
-			? sectionsExpected[0].components && sectionsExpected[0].components[0]
-			: undefined;
-		expect(comp?.name).toBe('Button');
-		expect(comp?.href).toBe('/#button');
+	test('recursively process all sections and components', () => {
+		const result = processSections(sections);
+		expect(result).toEqual([
+			expect.objectContaining({
+				sections: [
+					expect.objectContaining({
+						components: [
+							expect.objectContaining({ name: 'Button', hashPath: ['Components', 'Button'] }),
+						],
+					}),
+				],
+			}),
+		]);
 	});
 
-	test('should set visibleName property on each section', () => {
-		const result = processSections(sections, options);
-		const sectionsExpected = result[0].sections || [];
-		expect(sectionsExpected[0].visibleName).toBe('Components');
+	test('set props on each section', () => {
+		const result = processSections(sections);
+		expect(result).toEqual([
+			expect.objectContaining({
+				name: '',
+				visibleName: '',
+				hashPath: [],
+				externalLink: false,
+				components: [],
+				sections: [
+					expect.objectContaining({
+						name: 'Components',
+						visibleName: 'Components',
+						hashPath: ['Components'],
+					}),
+				],
+			}),
+		]);
 	});
 
-	test('should recursively process all nested sections when useRouterLinks is true has passed', () => {
-		const result = processSections([{ name: 'Component', sections: [{ name: 'Button' }] }], {
-			useRouterLinks: true,
-		});
-		expect(result?.[0].href).toBe('/#/Component');
-		expect(result?.[0].sections?.[0].href).toBe('/#/Component/Button');
+	test('set external link flag when section has a href', () => {
+		const result = processSections([{ ...sections[0], href: 'https://example.com' }]);
+		expect(result).toEqual([
+			expect.objectContaining({
+				externalLink: true,
+			}),
+		]);
 	});
 });

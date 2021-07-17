@@ -1,148 +1,143 @@
-import React, { isValidElement } from 'react';
+import React, { FC, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { compiler } from 'markdown-to-jsx';
-import stripHtmlComments from 'strip-html-comments';
 import Link from 'rsg-components/Link';
 import Text from 'rsg-components/Text';
 import Para from 'rsg-components/Para';
-import MarkdownHeading from 'rsg-components/Markdown/MarkdownHeading';
-import List from 'rsg-components/Markdown/List';
-import Blockquote from 'rsg-components/Markdown/Blockquote';
-import PreBase, { PreProps } from 'rsg-components/Markdown/Pre';
 import Code from 'rsg-components/Code';
-import Checkbox from 'rsg-components/Markdown/Checkbox';
-import Hr from 'rsg-components/Markdown/Hr';
-import { Details, DetailsSummary } from 'rsg-components/Markdown/Details';
-import { Table, TableHead, TableBody, TableRow, TableCell } from 'rsg-components/Markdown/Table';
+import MdxBlockquote from 'rsg-components/mdx/MdxBlockquote';
+import MdxCodeStatic from 'rsg-components/mdx/MdxCodeStatic';
+import MdxHeading from 'rsg-components/mdx/MdxHeading';
+import MdxHighlight from 'rsg-components/mdx/MdxHighlight';
+import MdxHr from 'rsg-components/mdx/MdxHr';
+import MdxList from 'rsg-components/mdx/MdxList';
+import MdxPre from 'rsg-components/mdx/MdxPre';
+import MdxTable from 'rsg-components/mdx/MdxTable';
+import MdxTableBody from 'rsg-components/mdx/MdxTableBody';
+import MdxTableCell from 'rsg-components/mdx/MdxTableCell';
+import MdxTableHead from 'rsg-components/mdx/MdxTableHead';
+import MdxTableRow from 'rsg-components/mdx/MdxTableRow';
 
-const Pre = (props: PreProps) => {
+// HACK: markdown-to-jsx doesn't destinguish between inline and block code blocks,
+// so we highlight syntax in the <pre> tag and assume <code> is always inline.
+const Pre: FC = (props) => {
 	if (isValidElement(props.children)) {
-		// Avoid rendering <Code> inside <Pre>
-		return <PreBase {...props.children.props} />;
+		return (
+			<MdxPre>
+				<MdxCodeStatic>
+					<MdxHighlight {...props.children.props} />
+				</MdxCodeStatic>
+			</MdxPre>
+		);
 	}
-	return <PreBase {...props} />;
+
+	return <MdxPre {...props} />;
 };
 Pre.propTypes = {
 	children: PropTypes.node,
 };
 
-export const baseOverrides = {
+export const overrides = {
 	a: {
-		component: Link as React.SFC,
+		component: Link,
 	},
 	h1: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 1,
 		},
 	},
 	h2: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 2,
 		},
 	},
 	h3: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 3,
 		},
 	},
 	h4: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 4,
 		},
 	},
 	h5: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 5,
 		},
 	},
 	h6: {
-		component: MarkdownHeading as React.SFC,
+		component: MdxHeading,
 		props: {
 			level: 6,
 		},
 	},
 	p: {
-		component: Para as React.SFC,
+		component: Para,
 		props: {
 			semantic: 'p',
 		},
 	},
 	em: {
-		component: Text as React.SFC,
+		component: Text,
 		props: {
 			semantic: 'em',
 		},
 	},
 	strong: {
-		component: Text as React.SFC,
+		component: Text,
 		props: {
 			semantic: 'strong',
 		},
 	},
 	ul: {
-		component: List as React.SFC,
+		component: MdxList,
 	},
 	ol: {
-		component: List as React.SFC,
+		component: MdxList,
 		props: {
 			ordered: true,
 		},
 	},
 	blockquote: {
-		component: Blockquote as React.SFC,
+		component: MdxBlockquote,
 	},
 	code: {
-		component: Code as React.SFC,
+		component: Code,
 	},
 	pre: {
-		component: Pre as React.SFC,
-	},
-	input: {
-		component: Checkbox as React.SFC,
+		component: Pre,
 	},
 	hr: {
-		component: Hr as React.SFC,
+		component: MdxHr,
 	},
 	table: {
-		component: Table as React.SFC,
+		component: MdxTable,
 	},
 	thead: {
-		component: TableHead as React.SFC,
+		component: MdxTableHead,
 	},
 	th: {
-		component: TableCell as React.SFC,
+		component: MdxTableCell,
 		props: {
 			header: true,
 		},
 	},
 	tbody: {
-		component: TableBody as React.SFC,
+		component: MdxTableBody,
 	},
 	tr: {
-		component: TableRow as React.SFC,
+		component: MdxTableRow,
 	},
 	td: {
-		component: TableCell as React.SFC,
+		component: MdxTableCell,
 	},
-	details: {
-		component: Details as React.SFC,
-	},
-	summary: {
-		component: DetailsSummary as React.SFC,
-	},
-};
-
-export const inlineOverrides = {
-	...baseOverrides,
-	p: {
-		component: Text,
-	},
-};
+} as const;
 
 interface MarkdownProps {
 	text: string;
@@ -150,8 +145,12 @@ interface MarkdownProps {
 }
 
 export const Markdown: React.FunctionComponent<MarkdownProps> = ({ text, inline }) => {
-	const overrides = inline ? inlineOverrides : baseOverrides;
-	return compiler(stripHtmlComments(text), { overrides, forceBlock: true });
+	return compiler(text, {
+		overrides,
+		forceBlock: !inline,
+		forceWrapper: inline,
+		wrapper: inline ? 'span' : 'div',
+	});
 };
 
 Markdown.propTypes = {

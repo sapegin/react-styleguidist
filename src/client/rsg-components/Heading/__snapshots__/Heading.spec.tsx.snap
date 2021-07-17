@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Heading should render a heading 1`] = `
-<h2 class="rsg--heading-8 rsg--heading2-10">
-  The heading
-</h2>
-`;

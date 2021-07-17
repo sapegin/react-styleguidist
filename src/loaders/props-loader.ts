@@ -16,13 +16,13 @@ const logger = createLogger('rsg');
 
 const ERROR_MISSING_DEFINITION = 'No suitable component definition found.';
 
-export default function(this: Rsg.StyleguidistLoaderContext, source: string) {
+export default function (this: Rsg.StyleguidistLoaderContext, source: string) {
 	const file: string = this.request.split('!').pop() || '';
 	const config = this._styleguidist;
 
 	// Setup Webpack context dependencies to enable hot reload when adding new files or updating any of component dependencies
 	if (config.contextDependencies) {
-		config.contextDependencies.forEach(dir => this.addContextDependency(dir));
+		config.contextDependencies.forEach((dir) => this.addContextDependency(dir));
 	}
 
 	const defaultParser = (
@@ -81,12 +81,7 @@ export default function(this: Rsg.StyleguidistLoaderContext, source: string) {
 
 	// Examples from Markdown file
 	const examplesFile = config.getExampleFilename(file);
-	finalDocs.examples = getExamples(
-		file,
-		finalDocs.displayName,
-		examplesFile,
-		config.defaultExample
-	);
+	finalDocs.content = finalDocs.content || getExamples(file, examplesFile);
 
 	if (config.updateDocs) {
 		finalDocs = config.updateDocs(finalDocs, file);

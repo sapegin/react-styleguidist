@@ -1,21 +1,18 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '../../test';
 import IsolateButton from './IsolateButton';
 
 it('should renderer a link to isolated mode', () => {
-	const actual = shallow(<IsolateButton name="Pizza" href="/#pizza" />);
+	render(<IsolateButton name="Pizza" href="/!#/Pizza" />);
 
-	expect(actual).toMatchSnapshot();
-});
-
-it('should renderer a link to example isolated mode', () => {
-	const actual = shallow(<IsolateButton name="Pizza" href="/#pizza" example={3} />);
-
-	expect(actual).toMatchSnapshot();
+	expect(screen.getByRole('link', { name: 'Open isolated' })).toHaveAttribute('href', '/!#/Pizza');
 });
 
 it('should renderer a link home in isolated mode', () => {
-	const actual = shallow(<IsolateButton name="Pizza" href="/#pizza" isolated />);
+	render(<IsolateButton name="Pizza" href="/#pizza" isolated />);
 
-	expect(actual).toMatchSnapshot();
+	expect(screen.getByRole('link', { name: 'Show all components' })).toHaveAttribute(
+		'href',
+		'/#pizza'
+	);
 });

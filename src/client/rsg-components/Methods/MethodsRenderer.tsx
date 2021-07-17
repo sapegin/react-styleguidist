@@ -41,15 +41,7 @@ const MethodsRenderer: React.FunctionComponent<{ methods: MethodDescriptor[] }> 
 );
 
 MethodsRenderer.propTypes = {
-	methods: PropTypes.arrayOf(
-		PropTypes.shape({
-			name: PropTypes.string.isRequired,
-			description: PropTypes.string,
-			returns: PropTypes.object,
-			params: PropTypes.array,
-			tags: PropTypes.object,
-		}).isRequired
-	).isRequired,
+	methods: PropTypes.array.isRequired,
 };
 
 export default MethodsRenderer;

@@ -1,3 +1,5 @@
+import Button from './Button'; import Story from 'rsg-components/mdx/public/Story'
+
 Basic button:
 
 ```jsx
@@ -28,9 +30,9 @@ Add padding between examples in a block by passing a `padded` modifier (` ```jsx
 <Button>Tap Me</Button>
 ```
 
-You can add a custom props to an example wrapper (` ```js { "props": { "className": "checks" } } `):
+You can add a custom class name to an example preview wrapper (` ```js preview-class=checks `):
 
-```js { "props": { "className": "checks" } }
+```js preview-class=checks
 <Button>I’m transparent!</Button>
 ```
 
@@ -49,7 +51,7 @@ import React from 'react'
 Fenced blocks with other languages are rendered as highlighted code:
 
 ```html
-<h1>Hello world</h1>
+<button size="large" color="deeppink">Click Me</button>
 ```
 
 Current component (like `Button` in this example) is always accessible by its name in the example code. If you want to use other components, you need to explicitly import them:
@@ -100,3 +102,7 @@ You can change the default state:
 const [count, setCount] = React.useState(42)
 ;<Button onClick={() => setCount(count + 1)}>{count}</Button>
 ```
+
+You could import examples from CSF story files:
+
+<Story id="this-part-we-actually-ignore--pink" />

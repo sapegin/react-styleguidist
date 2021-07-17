@@ -1,128 +1,48 @@
-import isFinite from 'lodash/isFinite';
-import filterComponentExamples from './filterComponentExamples';
-import filterComponentsInSectionsByExactName from './filterComponentsInSectionsByExactName';
-import filterSectionExamples from './filterSectionExamples';
-import findSection from './findSection';
 import getInfoFromHash from './getInfoFromHash';
-import { DisplayModes } from '../consts';
+import findLeafByHashPath from './findLeafByHashPath';
 import * as Rsg from '../../typings';
 
+const filterSections = ({
+	sections,
+	hashArray,
+}: {
+	sections: Rsg.Section[];
+	hashArray: string[];
+}) => {
+	if (hashArray.length > 0) {
+		const leaf = findLeafByHashPath(sections, hashArray);
+		return leaf ? [leaf] : [];
+	} else {
+		return sections;
+	}
+};
+
 /**
- * Return sections / components / examples to show on a screen according to a current route.
+ * Return sections / components to show on a screen according to the current route.
  *
  * Default: show all sections and components.
- * #!/Button: show only Button section or Button component
- * #!/Button/1: show only the second example (index 1) of Button component
+ * Default with pagePerSection: show the first section or component.
  *
- * @param {object} sections
- * @param {string} hash
- * @param {boolean} pagePerSection
- * @returns {object}
+ * #/Button: show only Button section or Button component
+ * #!/Button: show only Button section or Button component in isolated mode
+ * #!/Button//1: show only the second example (index 1) of Button component in isolated mode
  */
 export default function getRouteData(
 	sections: Rsg.Section[],
+	// Hash part of the URL, including the # character
 	hash: string,
+	// Should render a single section or component: pagePerSection option or isolated mode
 	pagePerSection = false
-): { sections: Rsg.Section[]; displayMode: string } {
-	// Parse URL hash to check if the components list must be filtered
-	const infoFromHash = getInfoFromHash(hash);
-
-	// Name of the filtered component/section to show isolated (/#!/Button → Button)
-	let { targetName, hashArray } = infoFromHash;
-
-	const {
-		// Index of the fenced block example of the filtered component isolate (/#!/Button/1 → 1)
-		targetIndex,
-		isolate,
-	} = infoFromHash;
-
-	let displayMode = isolate ? DisplayModes.example : DisplayModes.all;
-
-	if (pagePerSection && !targetName && sections[0] && sections[0].name) {
-		// For default takes the first section when pagePerSection enabled
-		targetName = sections[0].name;
-		hashArray = [targetName];
-	}
-
-	if (targetName) {
-		let filteredSections: Rsg.Section[] = [];
-
-		if (pagePerSection && hashArray) {
-			// hashArray could be an array as ["Documentation", "Files", "Button"]
-			// each hashArray's element represent each section name with the same deep
-			// so it should be filter each section to trying to find each one of array on the same deep
-			hashArray.forEach((hashName, index) => {
-				// Filter the requested component if required but only on the first depth
-				// so in the next time of iteration, it will be trying to filter only on the second depth and so on
-				filteredSections = filterComponentsInSectionsByExactName(sections, hashName, !!isolate);
-
-				// If filteredSections exists, its because is an array of an component
-				// else it is an array of sections and depending his sectionDepth
-				// his children could be filtered or not
-				if (filteredSections.length) {
-					sections = filteredSections;
-				} else {
-					let section = findSection(sections, hashName);
-					if (section) {
-						// Only if hashName is the last of hashArray his children should be filtered
-						// because else there are possibilities to keep on filtering to try find the next section
-						const isLastHashName = !hashArray || !hashArray[index + 1];
-
-						// When sectionDepth is bigger than 0, their children should be filtered
-						const shouldFilterTheirChildren = (section.sectionDepth || 0) > 0 && isLastHashName;
-
-						if (shouldFilterTheirChildren) {
-							// Filter his sections and components
-							section = {
-								...section,
-								sections: [],
-								components: [],
-							};
-						}
-						sections = [section];
-					} else {
-						sections = [];
-					}
-				}
-			});
-			if (!sections.length) {
-				displayMode = DisplayModes.notFound;
-			}
-			// The targetName takes the last of hashArray
-			targetName = hashArray[hashArray.length - 1];
-		} else {
-			// Filter the requested component if required
-			filteredSections = filterComponentsInSectionsByExactName(sections, targetName, true);
-			if (filteredSections.length) {
-				sections = filteredSections;
-				displayMode = DisplayModes.component;
-			} else {
-				const section = findSection(sections, targetName);
-				sections = section ? [section] : [];
-				displayMode = DisplayModes.section;
-			}
-		}
-
-		// If a single component or section is filtered and a fenced block index is specified hide all other examples
-		if (isFinite(targetIndex)) {
-			if (filteredSections.length === 1) {
-				const filteredComponents = filteredSections[0].components;
-				sections = [
-					{
-						...filteredSections[0],
-						components:
-							filteredComponents && typeof targetIndex === 'number'
-								? [filterComponentExamples(filteredComponents[0], targetIndex)]
-								: [],
-					},
-				];
-				displayMode = DisplayModes.example;
-			} else if (sections.length === 1) {
-				sections = [filterSectionExamples(sections[0], targetIndex)];
-				displayMode = DisplayModes.example;
-			}
-		}
-	}
-
-	return { sections, displayMode };
+): {
+	sections: Rsg.Section[];
+	isolated: boolean;
+	exampleIndex?: number | string;
+} {
+	const { isolated, hashArray, exampleIndex } = getInfoFromHash({ sections, hash, pagePerSection });
+	const filteredSections = filterSections({ sections, hashArray });
+	return {
+		sections: filteredSections,
+		isolated,
+		exampleIndex,
+	};
 }

@@ -1,50 +1,48 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, Provider } from '../../test';
 import ReactComponent from './ReactComponent';
-import slots from '../slots';
-import Context from '../Context';
-import { DisplayModes } from '../../consts';
 import * as Rsg from '../../../typings';
-import config from '../../../scripts/schemas/config';
 
-const compileExample = config.compileExample.default;
-
-const context = {
-	config: {
-		pagePerSection: false,
-		compileExample,
-	},
-	displayMode: DisplayModes.all,
-	slots: slots(),
+const module: Rsg.ExamplesModule = {
+	default: ({ componentName, exampleMode }) => (
+		<h1>
+			{componentName}/{exampleMode}
+		</h1>
+	),
+	__esModule: true,
+	__documentScope: {},
+	__exampleScope: {},
+	__storiesScope: {},
+	__currentComponent: () => null,
+	__examples: [],
+	__namedExamples: {},
 };
 
-const Provider = (props: any) => <Context.Provider value={context} {...props} />;
-
-const evalInContext = (a: string) =>
-	// eslint-disable-next-line no-new-func
-	new Function('require', 'const React = require("react");' + a).bind(null, require);
-
-const component = {
+const component: Rsg.Component = {
 	name: 'Foo',
 	visibleName: 'Foo',
 	slug: 'foo',
-	href: '#foo',
+	hashPath: ['Foo'],
 	pathLine: 'foo/bar.js',
 	props: {
-		description: 'Bar',
+		displayName: 'Bar',
 		methods: [],
-		examples: [],
 	},
 	metadata: {},
+	filepath: 'foo/bar.js',
+	hasExamples: false,
 };
 
 const componentWithEverything: Rsg.Component = {
 	name: 'Foo',
 	visibleName: 'Foo',
 	slug: 'foo',
+	hashPath: ['Foo'],
 	pathLine: 'foo/bar.js',
 	props: {
-		description: 'Bar',
+		displayName: 'Bar',
 		methods: [
 			{
 				name: 'set',
@@ -59,120 +57,93 @@ const componentWithEverything: Rsg.Component = {
 				description: 'Sets the counter to a particular value.',
 			},
 		],
-		examples: [
-			{
-				type: 'code',
-				content: '<button>Code: OK</button>',
-				evalInContext,
-			},
-			{
-				type: 'markdown',
-				content: 'Markdown: Hello *world*!',
-			},
-		],
+		content: module,
 	},
 	metadata: {
 		tags: ['one', 'two'],
 	},
+	filepath: 'foo/bar.js',
+	hasExamples: false,
 };
 
 test('should render an example placeholder', () => {
 	const { getByText } = render(
-		<Provider>
-			<ReactComponent component={component} depth={3} exampleMode="collapse" usageMode="collapse" />
-		</Provider>
+		<ReactComponent component={component} depth={3} exampleMode="collapse" usageMode="collapse" />
 	);
 	expect(getByText(/add examples to this component/i)).toBeInTheDocument();
 });
 
-test('should render examples', () => {
+test('should render example component', () => {
 	const { getByText } = render(
-		<Provider>
-			<ReactComponent
-				component={componentWithEverything}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="collapse"
-			/>
-		</Provider>
+		<ReactComponent
+			component={componentWithEverything}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="collapse"
+		/>
 	);
-	expect(getByText(/code: ok/i)).toBeInTheDocument();
-	expect(getByText(/markdown: hello/i)).toBeInTheDocument();
+	expect(getByText(/Foo\/collapse/i)).toBeInTheDocument();
 });
 
 test('should render usage closed by default when usageMode is "collapse"', () => {
 	const { getByText } = render(
-		<Provider>
-			<ReactComponent
-				component={componentWithEverything}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="collapse"
-			/>
-		</Provider>
+		<ReactComponent
+			component={componentWithEverything}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="collapse"
+		/>
 	);
 	expect(getByText(/props & methods/i)).toHaveAttribute('aria-pressed', 'false');
 });
 
 test('should render usage opened by default when usageMode is "expand"', () => {
 	const { getByText } = render(
-		<Provider>
-			<ReactComponent
-				component={componentWithEverything}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="expand"
-			/>
-		</Provider>
+		<ReactComponent
+			component={componentWithEverything}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="expand"
+		/>
 	);
 	expect(getByText(/props & methods/i)).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('should not render usage when usageMode is "hide"', () => {
 	const { queryByText } = render(
-		<Provider>
-			<ReactComponent
-				component={componentWithEverything}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="hide"
-			/>
-		</Provider>
+		<ReactComponent
+			component={componentWithEverything}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="hide"
+		/>
 	);
 	expect(queryByText(/props & methods/i)).not.toBeInTheDocument();
 });
 
+// TODO: Why do we need this? When component can have no name?
 test('should not render anything when component has no name', () => {
 	const { container } = render(
-		<Provider>
-			<ReactComponent
-				component={{ slug: 'foo', props: {} }}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="collapse"
-			/>
-		</Provider>
+		<ReactComponent
+			component={{ slug: 'foo', props: {} } as any}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="collapse"
+		/>
 	);
 	expect(container).toBeEmptyDOMElement();
 });
 
-test('should not render component in isolation mode by default', () => {
+test('should not render component in isolated mode by default', () => {
 	const { getByLabelText } = render(
-		<Provider>
-			<ReactComponent component={component} depth={3} exampleMode="collapse" usageMode="collapse" />
-		</Provider>
+		<ReactComponent component={component} depth={3} exampleMode="collapse" usageMode="collapse" />
 	);
 	expect(getByLabelText(/open isolated/i)).toBeInTheDocument();
 });
 
-test('should render component in isolation mode', () => {
+test('should render component in isolated mode', () => {
 	const { getByLabelText } = render(
-		<Provider
-			value={{
-				...context,
-				displayMode: DisplayModes.component,
-			}}
-		>
+		<Provider isolated>
 			<ReactComponent component={component} depth={3} exampleMode="collapse" usageMode="collapse" />
 		</Provider>
 	);
@@ -181,26 +152,25 @@ test('should render component in isolation mode', () => {
 
 test('should prefix description with deprecated label when @deprecated is present in tags', () => {
 	const { getByText } = render(
-		<Provider>
-			<ReactComponent
-				component={{
-					...component,
-					props: {
-						tags: {
-							deprecated: [
-								{
-									title: 'deprecated',
-									description: 'I am deprecated',
-								},
-							],
-						},
+		<ReactComponent
+			component={{
+				...component,
+				props: {
+					...component.props,
+					tags: {
+						deprecated: [
+							{
+								title: 'deprecated',
+								description: 'I am deprecated',
+							},
+						],
 					},
-				}}
-				depth={3}
-				exampleMode="collapse"
-				usageMode="collapse"
-			/>
-		</Provider>
+				},
+			}}
+			depth={3}
+			exampleMode="collapse"
+			usageMode="collapse"
+		/>
 	);
 	expect(getByText(/deprecated:/i)).toBeInTheDocument();
 });

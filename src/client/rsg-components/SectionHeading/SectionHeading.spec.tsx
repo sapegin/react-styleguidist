@@ -1,26 +1,9 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import SectionHeading from './index';
+import { mount } from 'enzyme';
 import SectionHeadingRenderer from './SectionHeadingRenderer';
 
 describe('SectionHeading', () => {
 	const FakeToolbar = () => <div>Fake toolbar</div>;
-
-	test('should forward slot properties to the toolbar', () => {
-		const actual = shallow(
-			<SectionHeading
-				id="section"
-				slotName="slot"
-				href="/#section"
-				slotProps={{ foo: 1, bar: 'baz' }}
-				depth={2}
-			>
-				A Section
-			</SectionHeading>
-		);
-
-		expect(actual).toMatchSnapshot();
-	});
 
 	test('render a section heading', () => {
 		const actual = mount(

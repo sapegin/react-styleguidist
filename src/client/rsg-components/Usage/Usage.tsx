@@ -25,10 +25,7 @@ const Usage: React.FunctionComponent<{
 };
 
 Usage.propTypes = {
-	props: PropTypes.shape({
-		props: PropTypes.array,
-		methods: PropTypes.array,
-	}).isRequired,
+	props: PropTypes.object.isRequired,
 };
 
 export default Usage;

@@ -1,53 +1,38 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Wrapper from 'rsg-components/Wrapper';
+import evalInContext from '../../utils/evalInContext';
 import compileCode from '../../utils/compileCode';
 import * as Rsg from '../../../typings';
 
 interface ReactExampleProps {
 	code: string;
-	evalInContext(code: string): React.ComponentType;
-	onError(err: Error): void;
+	documentScope: Record<string, unknown>;
+	exampleScope: Record<string, unknown>;
 	compileExample: Rsg.SanitizedStyleguidistConfig['compileExample'];
+	onError(err: Error): void;
 }
 
-export default class ReactExample extends Component<ReactExampleProps> {
-	public static propTypes = {
-		code: PropTypes.string.isRequired,
-		evalInContext: PropTypes.func.isRequired,
-		onError: PropTypes.func.isRequired,
-		compileExample: PropTypes.func.isRequired,
-	};
-
-	public shouldComponentUpdate(nextProps: ReactExampleProps) {
-		return this.props.code !== nextProps.code;
-	}
-
-	private compileCode() {
-		const { code, compileExample, onError } = this.props;
-		try {
-			return compileCode(code, compileExample, onError);
-		} catch (err) {
-			if (onError) {
-				onError(err);
-			}
-			return '';
-		}
-	}
-
-	public render() {
-		const compiledCode = this.compileCode();
-		if (!compiledCode) {
-			return null;
-		}
-
-		const { onError, evalInContext } = this.props;
-		const ExampleComponent = evalInContext(compiledCode);
-		const wrappedComponent = (
-			<Wrapper onError={onError}>
-				<ExampleComponent />
-			</Wrapper>
-		);
-		return wrappedComponent;
-	}
+export default function ReactExample({
+	onError,
+	code,
+	documentScope,
+	exampleScope,
+	compileExample,
+}: ReactExampleProps) {
+	const compiledCode = compileCode(code, compileExample, onError);
+	const ExampleComponent = evalInContext(compiledCode, { documentScope, exampleScope });
+	return (
+		<Wrapper onError={onError}>
+			<ExampleComponent />
+		</Wrapper>
+	);
 }
+
+ReactExample.propTypes = {
+	code: PropTypes.string.isRequired,
+	documentScope: PropTypes.object.isRequired,
+	exampleScope: PropTypes.object.isRequired,
+	compileExample: PropTypes.func.isRequired,
+	onError: PropTypes.func.isRequired,
+};

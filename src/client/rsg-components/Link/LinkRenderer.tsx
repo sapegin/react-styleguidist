@@ -19,8 +19,8 @@ const styles = ({ color }: Rsg.Theme) => ({
 	},
 });
 
-interface LinkProps extends JssInjectedProps {
-	children: React.ReactNode;
+export interface LinkProps extends JssInjectedProps {
+	children?: React.ReactNode;
 	className?: string;
 	href?: string;
 	target?: string;

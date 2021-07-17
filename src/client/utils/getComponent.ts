@@ -1,19 +1,18 @@
-type Module = DefaultExport | { [name: string]: any };
+import { ComponentType } from 'react';
 
 interface DefaultExport {
-	default: any;
+	default: unknown;
 }
 
-function isDefaultExport(module: Module): module is DefaultExport {
+function isDefaultExport(module: any): module is DefaultExport {
 	return !!module.default;
 }
 
 /**
- * Given a component module and a name,
- * return the appropriate export.
+ * Given a component module and a name, return the appropriate export.
  * See /docs/Components.md
  */
-export default function getComponent(module: Module, name?: string): Module {
+export default function getComponent(module: any, name?: string): ComponentType {
 	//
 	// If the module defines a default export, return that
 	// e.g.
@@ -23,7 +22,7 @@ export default function getComponent(module: Module, name?: string): Module {
 	// ```
 	//
 	if (isDefaultExport(module)) {
-		return module.default;
+		return module.default as ComponentType;
 	}
 
 	// If it is a CommonJS module which exports a function, return that
@@ -35,7 +34,7 @@ export default function getComponent(module: Module, name?: string): Module {
 	// ```
 	//
 	if (!module.__esModule && typeof module === 'function') {
-		return module;
+		return module as ComponentType;
 	}
 
 	// If the module exports just one named export, return that
@@ -47,7 +46,7 @@ export default function getComponent(module: Module, name?: string): Module {
 	//
 	const namedExports = Object.keys(module);
 	if (namedExports.length === 1) {
-		return module[namedExports[0]];
+		return module[namedExports[0]] as ComponentType;
 	}
 
 	// If the module exports a named export with the same name as the
@@ -62,5 +61,7 @@ export default function getComponent(module: Module, name?: string): Module {
 	//
 	// Else return the module itself
 	//
-	return (name ? module[name] : undefined) || module;
+	return (
+		(name ? (module[name] as ComponentType) : undefined) || ((module as unknown) as ComponentType)
+	);
 }

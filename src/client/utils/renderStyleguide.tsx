@@ -8,43 +8,25 @@ import processSections from './processSections';
 import * as Rsg from '../../typings';
 
 interface StyleguideObject {
-	sections: Rsg.Section[];
+	sections: Rsg.RawSection[];
 	config: Rsg.ProcessedStyleguidistConfig;
 	patterns: string[];
 	welcomeScreen?: boolean;
 }
 
-/**
- * @param {object} styleguide An object returned by styleguide-loader
- * @param {number} codeRevision
- * @param {Location} [loc]
- * @param {Document} [doc]
- * @param {History} [hist]
- * @return {React.ReactElement}
- */
 export default function renderStyleguide(
 	styleguide: StyleguideObject,
 	codeRevision: number,
-	loc: { hash: string; pathname: string; search: string } = window.location,
-	doc: { title: string } = document,
-	hist: { replaceState: (name: string, title: string, url: string) => void } = window.history
+	loc: { hash: string; pathname: string } = window.location,
+	doc: { title: string } = document
 ): React.ReactElement {
-	const allSections = processSections(styleguide.sections, {
-		useRouterLinks: styleguide.config.pagePerSection,
-	});
+	const allSections = processSections(styleguide.sections);
 
 	const { title, pagePerSection, theme, styles } = styleguide.config;
-	const { sections, displayMode } = getRouteData(allSections, loc.hash, pagePerSection);
+	const { sections, isolated, exampleIndex } = getRouteData(allSections, loc.hash, pagePerSection);
 
 	// Update page title
-	doc.title = getPageTitle(sections, title, displayMode);
-
-	// If the current hash location was set to just `/` (e.g. when navigating back from isolated view to overview)
-	// replace the URL with one without hash, to present the user with a single address of the overview screen
-	if (loc.hash === '#/') {
-		const url = loc.pathname + loc.search;
-		hist.replaceState('', doc.title, url);
-	}
+	doc.title = getPageTitle(sections, title, pagePerSection || isolated);
 
 	return (
 		<StyleGuide
@@ -58,7 +40,8 @@ export default function renderStyleguide(
 			patterns={styleguide.patterns}
 			sections={sections}
 			allSections={allSections}
-			displayMode={displayMode}
+			isolated={isolated}
+			exampleIndex={exampleIndex}
 			pagePerSection={pagePerSection}
 		/>
 	);

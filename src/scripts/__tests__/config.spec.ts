@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import { Configuration } from 'webpack';
 import getConfig from '../config';
@@ -138,37 +137,6 @@ it('should throw if assetsDir does not exist', () => {
 			assetsDir: 'pizza',
 		});
 	expect(fn).toThrow();
-});
-
-it('should use embedded default example template if defaultExample=true', (done) => {
-	const result = getConfig({
-		defaultExample: true,
-	});
-	expect(typeof result.defaultExample).toEqual('string');
-	if (typeof result.defaultExample === 'string') {
-		expect(fs.existsSync(result.defaultExample)).toBeTruthy();
-	} else {
-		done.fail();
-	}
-	done();
-});
-
-it('should absolutize defaultExample if it is a string', () => {
-	const result = getConfig({
-		defaultExample: 'src/components/Button.md',
-	});
-	expect(result.defaultExample).toMatch(/^\//);
-});
-
-it('should throw if defaultExample does not exist', () => {
-	expect.assertions(1);
-	try {
-		getConfig({
-			defaultExample: 'pizza',
-		});
-	} catch (err) {
-		expect(err.message).toMatch('does not exist');
-	}
 });
 
 it('should use components option as the first sections if there’s no sections option', () => {

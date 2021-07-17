@@ -1,5 +1,5 @@
-import acornJsx from 'acorn-jsx';
 import { walk } from 'estree-walker';
+import { Node } from 'estree';
 import getAst from './getAst';
 
 /**
@@ -11,19 +11,21 @@ export default function getImports(code: string): string[] {
 	//    imports/requires are not allowed in this case, and we'll wrap the code
 	//    in React.Fragment on the frontend
 	// 2. All other errors - we'll deal with them on the frontend
-	const ast = getAst(code, [acornJsx()]);
+	const ast = getAst(code);
 	if (!ast) {
 		return [];
 	}
 
 	const imports: string[] = [];
-	walk(ast as any, {
-		enter: (node: any) => {
+	walk(ast, {
+		enter: (nodeRaw) => {
+			const node = nodeRaw as Node;
+
 			// import foo from 'foo'
 			// import 'foo'
 			if (node.type === 'ImportDeclaration') {
 				if (node.source) {
-					imports.push(node.source.value);
+					imports.push(node.source.value as string);
 				}
 			}
 
@@ -31,11 +33,12 @@ export default function getImports(code: string): string[] {
 			else if (node.type === 'CallExpression') {
 				if (
 					node.callee &&
+					node.callee.type === 'Identifier' &&
 					node.callee.name === 'require' &&
-					node.arguments &&
+					node.arguments[0]?.type === 'Literal' &&
 					node.arguments[0].value
 				) {
-					imports.push(node.arguments[0].value);
+					imports.push(node.arguments[0].value as string);
 				}
 			}
 		},

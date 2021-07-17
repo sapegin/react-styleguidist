@@ -14,9 +14,9 @@ export const styles = ({ space, color, fontFamily, fontSize }: Rsg.Theme) => ({
 	},
 });
 
-interface ParaProps extends JssInjectedProps {
+export interface ParaProps extends JssInjectedProps {
 	semantic?: 'p';
-	children: React.ReactNode;
+	children?: React.ReactNode;
 }
 
 export const ParaRenderer: React.FunctionComponent<ParaProps> = ({
@@ -32,7 +32,7 @@ export const ParaRenderer: React.FunctionComponent<ParaProps> = ({
 ParaRenderer.propTypes = {
 	classes: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
 	semantic: PropTypes.oneOf(['p']),
-	children: PropTypes.node.isRequired,
+	children: PropTypes.node,
 };
 
 export default Styled<ParaProps>(styles)(ParaRenderer);

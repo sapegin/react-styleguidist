@@ -1,30 +1,40 @@
-import { Parser, Node, Options } from 'acorn';
+import { parse, ParserOptions } from '@babel/parser';
+import { Program } from 'estree';
 import Logger from 'glogg';
-
-interface Program extends Node {
-	body: Node[];
-}
 
 const logger = Logger('rsg');
 
-export const ACORN_OPTIONS: Options = {
-	ecmaVersion: 2019,
+const startsWithJsx = (code: string): boolean => !!code.trim().match(/^</);
+
+const wrapCodeInFragment = (code: string): string => `<React.Fragment>${code}</React.Fragment>;`;
+
+export const BABEL_OPTIONS: ParserOptions = {
+	allowReturnOutsideFunction: true,
+	allowAwaitOutsideFunction: true,
+	errorRecovery: true,
 	sourceType: 'module',
+	plugins: [
+		'jsx',
+		// TODO: How to support flow? We can't use `flow` and `typescript` plugins together
+		'typescript',
+		// Generate AST compatible with ESTree
+		// TODO: We may want to rewrite the code to use Babel AST instead
+		'estree',
+	],
 };
 
 /**
- * Parse source code with Acorn and return AST, returns undefined in case of errors
+ * Try to parse source code using Babel parser, return AST.
+ * If failed, return undefined.
  */
-export default function getAst(
-	code: string,
-	plugins: ((BaseParser: typeof Parser) => typeof Parser)[] = []
-): Program | undefined {
-	const parser = Parser.extend(...plugins);
-
+export default function getAst(code: string): Program | undefined {
+	const wrappedCode = startsWithJsx(code) ? wrapCodeInFragment(code) : code;
 	try {
-		return parser.parse(code, ACORN_OPTIONS) as Program;
+		return (parse(wrappedCode, BABEL_OPTIONS) as unknown) as Program; // TODO: @babel/types.File
 	} catch (err) {
-		logger.debug(`Acorn cannot parse example code: ${err.message}\n\nCode:\n${code}`);
+		// TODO: Remove console.log
+		console.log(`Babel cannot parse code: ${err.message}\n\nCode:\n${code}`);
+		logger.debug(`Babel cannot parse code: ${err.message}\n\nCode:\n${code}`);
 		return undefined;
 	}
 }

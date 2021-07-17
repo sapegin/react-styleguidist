@@ -25,10 +25,6 @@ const sections: Rsg.ConfigSection[] = [
 		components: 'components/**/*.js',
 		ignore: '**/components/Annotation/*',
 	},
-	{
-		name: 'Ignore',
-		content: () => 'Hello World',
-	} as any,
 ];
 const sectionsWithDepth = [
 	{
@@ -109,12 +105,6 @@ it('processSection() should return an object for section without ignored compone
 	expect(result).toMatchSnapshot();
 });
 
-it('processSection() should return an object for section with content as function', () => {
-	const result = processSection(sections[3], config);
-
-	expect(result).toMatchSnapshot();
-});
-
 it('getSections() should return an array', () => {
 	const result = getSections(sections, config);
 
@@ -151,7 +141,7 @@ it('getSections() should return an array of sectionsWithDepth with sectionDepth 
 
 it('getSections() should make custom options by user available', () => {
 	const result = getSections(sectionsWithDepth, config);
-	const expandSection = result.find(section => section.name === 'Components');
+	const expandSection = result.find((section) => section.name === 'Components');
 	expect(expandSection).toHaveProperty('expand');
 });
 

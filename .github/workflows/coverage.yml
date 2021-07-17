@@ -1,0 +1,26 @@
+name: Codecov
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - run: npm ci
+      - run: npm run test:coverage -- --runInBand
+
+      - uses: codecov/codecov-action@v1
+        with:
+          verbose: true

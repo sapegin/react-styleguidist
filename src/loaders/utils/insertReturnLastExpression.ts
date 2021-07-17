@@ -23,6 +23,7 @@ export default function insertReturnLastExpression(code: string): string {
 		return code;
 	}
 
+	// @ts-expect-error: There are no types for location ;-/
 	const { start, end } = lastExpressionPosition;
 	const head = unsemicolon(code.substring(0, start));
 	const lastExpressionCode = unsemicolon(code.substring(start, end));

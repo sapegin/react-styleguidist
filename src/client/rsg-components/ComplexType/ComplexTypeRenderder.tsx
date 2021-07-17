@@ -10,8 +10,12 @@ export const styles = ({ space }: Rsg.Theme) => ({
 		alignItems: 'center',
 		display: 'inline-flex',
 	},
+	name: {
+		flexShrink: 0,
+	},
 	icon: {
 		marginLeft: space[0],
+		flexShrink: 0,
 	},
 });
 
@@ -24,7 +28,9 @@ function ComplexTypeRenderer({ classes, name, raw }: ComplexTypeProps) {
 	return (
 		<Tooltip placement="right" content={raw}>
 			<span className={classes.complexType}>
-				<Text>{name}</Text>
+				<span className={classes.name}>
+					<Text>{name}</Text>
+				</span>
 				<MdInfoOutline className={classes.icon} />
 			</span>
 		</Tooltip>

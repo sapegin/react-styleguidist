@@ -1,165 +1,155 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Markdown inline should render text in a span 1`] = `
-<span class="rsg--text-11 rsg--inheritSize-12 rsg--baseColor-16">
+<span>
   Hello world!
 </span>
 `;
 
-exports[`Markdown should render a blockquote 1`] = `
-<blockquote class="rsg--blockquote-25">
-  <p class="rsg--para-2">
+exports[`Markdown renders blockquotes 1`] = `
+<blockquote class="rsg--blockquote-0">
+  <p class="rsg--para-0">
     This is a blockquote.
 And this is a second line.
   </p>
 </blockquote>
 `;
 
-exports[`Markdown should render a horizontal rule 1`] = `<hr class="rsg--hr-28">`;
-
-exports[`Markdown should render a table 1`] = `
-<table class="rsg--table-29">
-  <thead class="rsg--thead-30">
-    <tr>
-      <th class="rsg--th-32 rsg--td-31">
-        heading 1
-      </th>
-      <th class="rsg--th-32 rsg--td-31">
-        heading 2
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="rsg--td-31">
-        foo
-      </td>
-      <td class="rsg--td-31">
-        bar
-      </td>
-    </tr>
-    <tr>
-      <td class="rsg--td-31">
-        more foo
-      </td>
-      <td class="rsg--td-31">
-        more bar
-      </td>
-    </tr>
-  </tbody>
-</table>
-`;
-
-exports[`Markdown should render check-lists 1`] = `
-<ul class="rsg--list-21">
-  <li class="rsg--li-23">
-    <input type="checkbox"
-           readonly
-           class="rsg--input-24"
+exports[`Markdown renders check-lists 1`] = `
+<ul class="rsg--list-0">
+  <li class="rsg--li-0">
+    <input readonly
+           type="checkbox"
     >
     to do 1
   </li>
-  <li class="rsg--li-23">
-    <input type="checkbox"
-           readonly
-           class="rsg--input-24"
+  <li class="rsg--li-0">
+    <input readonly
+           type="checkbox"
     >
     to do 2
   </li>
-  <li class="rsg--li-23">
-    <input type="checkbox"
+  <li class="rsg--li-0">
+    <input readonly
+           type="checkbox"
            checked
-           readonly
-           class="rsg--input-24"
     >
     to do 3
   </li>
 </ul>
 `;
 
-exports[`Markdown should render code blocks without escaping 1`] = `
-<pre class="lang-html rsg--pre-26">
-  <foo>
-  </foo>
-</pre>
+exports[`Markdown renders code blocks with highlighting 1`] = `
+<div class="rsg--preContainer-0">
+  <div class="rsg--container-0">
+    <pre class="prism-code language-html rsg--highlightPre-0"
+         style="color: rgb(51, 51, 51); background-color: transparent;"
+    >
+      <div class="token-line"
+           style="color: rgb(51, 51, 51);"
+      >
+        <span class="token tag punctuation"
+              style="color: rgb(153, 153, 153);"
+        >
+          &lt;
+        </span>
+        <span class="token tag"
+              style="color: rgb(153, 0, 85);"
+        >
+          foo
+        </span>
+        <span class="token tag punctuation"
+              style="color: rgb(153, 153, 153);"
+        >
+          &gt;
+        </span>
+        <span class="token tag punctuation"
+              style="color: rgb(153, 153, 153);"
+        >
+          &lt;/
+        </span>
+        <span class="token tag"
+              style="color: rgb(153, 0, 85);"
+        >
+          foo
+        </span>
+        <span class="token tag punctuation"
+              style="color: rgb(153, 153, 153);"
+        >
+          &gt;
+        </span>
+      </div>
+    </pre>
+  </div>
+</div>
 `;
 
-exports[`Markdown should render emphasis and strong text 1`] = `
+exports[`Markdown renders emphasis and strong text 1`] = `
 <div>
-  <p class="rsg--para-2">
+  <p class="rsg--para-0">
     this text is
-    <strong class="rsg--text-11 rsg--inheritSize-12 rsg--baseColor-16 rsg--strong-19">
+    <strong class="rsg--text-0 rsg--inheritSize-0 rsg--baseColor-0 rsg--strong-0">
       strong
     </strong>
   </p>
-  <p class="rsg--para-2">
+  <p class="rsg--para-0">
     and this is
-    <em class="rsg--text-11 rsg--inheritSize-12 rsg--baseColor-16 rsg--em-18">
+    <em class="rsg--text-0 rsg--inheritSize-0 rsg--baseColor-0 rsg--em-0">
       emphasized
     </em>
   </p>
 </div>
 `;
 
-exports[`Markdown should render headings with generated ids 1`] = `
+exports[`Markdown renders headings with generated IDs 1`] = `
 <div>
-  <div class="rsg--spacing-3">
-    <h1 id="one"
-        class="rsg--heading-4 rsg--heading1-5"
-    >
-      one
-    </h1>
-  </div>
-  <div class="rsg--spacing-3">
-    <h2 id="two"
-        class="rsg--heading-4 rsg--heading2-6"
-    >
-      two
-    </h2>
-  </div>
-  <div class="rsg--spacing-3">
-    <h3 id="three"
-        class="rsg--heading-4 rsg--heading3-7"
-    >
-      three
-    </h3>
-  </div>
-  <div class="rsg--spacing-3">
-    <h4 id="four"
-        class="rsg--heading-4 rsg--heading4-8"
-    >
-      four
-    </h4>
-  </div>
-  <div class="rsg--spacing-3">
-    <h5 id="five"
-        class="rsg--heading-4 rsg--heading5-9"
-    >
-      five
-    </h5>
-  </div>
-  <div class="rsg--spacing-3">
-    <h6 id="six"
-        class="rsg--heading-4 rsg--heading6-10"
-    >
-      six
-    </h6>
-  </div>
+  <h1 id="one"
+      class="rsg--heading-0 rsg--heading1-0 rsg--spacing-0"
+  >
+    one
+  </h1>
+  <h2 id="two"
+      class="rsg--heading-0 rsg--heading2-0 rsg--spacing-0"
+  >
+    two
+  </h2>
+  <h3 id="three"
+      class="rsg--heading-0 rsg--heading3-0 rsg--spacing-0"
+  >
+    three
+  </h3>
+  <h4 id="four"
+      class="rsg--heading-0 rsg--heading4-0 rsg--spacing-0"
+  >
+    four
+  </h4>
+  <h5 id="five"
+      class="rsg--heading-0 rsg--heading5-0 rsg--spacing-0"
+  >
+    five
+  </h5>
+  <h6 id="six"
+      class="rsg--heading-0 rsg--heading6-0 rsg--spacing-0"
+  >
+    six
+  </h6>
 </div>
 `;
 
-exports[`Markdown should render inline code with escaping 1`] = `
-<p class="rsg--para-2">
+exports[`Markdown renders horizontal rules 1`] = `<hr class="rsg--hr-0">`;
+
+exports[`Markdown renders inline code with escaping 1`] = `
+<p class="rsg--para-0">
   Foo
-  <code class="rsg--code-27">
+  <code class="rsg--code-0">
     &lt;bar&gt;
   </code>
   baz
 </p>
 `;
 
-exports[`Markdown should render links 1`] = `
-<p class="rsg--para-2">
+exports[`Markdown renders links 1`] = `
+<p class="rsg--para-0">
   a
   <a href="http://test.com"
      class="rsg--link-0"
@@ -169,72 +159,109 @@ exports[`Markdown should render links 1`] = `
 </p>
 `;
 
-exports[`Markdown should render mixed nested lists 1`] = `
-<ul class="rsg--list-21">
-  <li class="rsg--li-23">
+exports[`Markdown renders mixed nested lists 1`] = `
+<ul class="rsg--list-0">
+  <li class="rsg--li-0">
     list 1
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     list 2
-    <ol class="rsg--list-21 rsg--ordered-22">
-      <li class="rsg--li-23">
+    <ol class="rsg--list-0 rsg--ordered-0">
+      <li class="rsg--li-0">
         Sub-list
       </li>
-      <li class="rsg--li-23">
+      <li class="rsg--li-0">
         Sub-list
       </li>
-      <li class="rsg--li-23">
+      <li class="rsg--li-0">
         Sub-list
       </li>
     </ol>
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     list 3
   </li>
 </ul>
 `;
 
-exports[`Markdown should render ordered lists 1`] = `
-<ol class="rsg--list-21 rsg--ordered-22">
-  <li class="rsg--li-23">
+exports[`Markdown renders ordered lists 1`] = `
+<ol class="rsg--list-0 rsg--ordered-0">
+  <li class="rsg--li-0">
     list
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     item
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     three
   </li>
 </ol>
 `;
 
-exports[`Markdown should render paragraphs 1`] = `
+exports[`Markdown renders paragraphs 1`] = `
 <div>
-  <p class="rsg--para-2">
+  <p class="rsg--para-0">
     a paragraph
   </p>
-  <p class="rsg--para-2">
+  <p class="rsg--para-0">
     another paragraph
   </p>
 </div>
 `;
 
-exports[`Markdown should render pre-formatted text 1`] = `
-<pre class="rsg--pre-26">
-  this is preformatted
+exports[`Markdown renders pre-formatted text 1`] = `
+<div class="rsg--preContainer-0">
+  <div class="rsg--container-0">
+    <pre class="rsg--highlightPre-0">
+      this is preformatted
 so is this
-</pre>
+    </pre>
+  </div>
+</div>
 `;
 
-exports[`Markdown should render unordered lists 1`] = `
-<ul class="rsg--list-21">
-  <li class="rsg--li-23">
+exports[`Markdown renders tables 1`] = `
+<table class="rsg--table-0">
+  <thead class="rsg--thead-0">
+    <tr>
+      <th class="rsg--th-0 rsg--td-0">
+        heading 1
+      </th>
+      <th class="rsg--th-0 rsg--td-0">
+        heading 2
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="rsg--td-0">
+        foo
+      </td>
+      <td class="rsg--td-0">
+        bar
+      </td>
+    </tr>
+    <tr>
+      <td class="rsg--td-0">
+        more foo
+      </td>
+      <td class="rsg--td-0">
+        more bar
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Markdown renders unordered lists 1`] = `
+<ul class="rsg--list-0">
+  <li class="rsg--li-0">
     list
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     item
   </li>
-  <li class="rsg--li-23">
+  <li class="rsg--li-0">
     three
   </li>
 </ul>

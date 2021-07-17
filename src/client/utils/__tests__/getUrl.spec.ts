@@ -1,126 +1,67 @@
-import getUrl from '../getUrl';
+import { getAnchorUrl, getPageUrl, getIsolatedUrl, getSectionUrl } from '../getUrl';
 
-describe('getUrl', () => {
-	const loc = {
-		origin: 'http://example.com',
-		pathname: '/styleguide/',
-		hash: '#/Components',
-	};
-	const locHashedURL = {
-		origin: 'http://example.com',
-		pathname: '/styleguide/',
-		hash: '#button',
-	};
-	const name = 'FooBar';
-	const slug = 'foobar';
+describe('getAnchorUrl', () => {
+	test('anchor part of the URL', () => {
+		const result = getAnchorUrl('pizza');
+		expect(result).toBe('#pizza');
+	});
+});
 
-	it('should return a home URL', () => {
-		const result = getUrl({}, loc);
-		expect(result).toBe('/styleguide/');
+describe('getPageUrl', () => {
+	test('page URL', () => {
+		const result = getPageUrl(['Components', 'Button']);
+		expect(result).toBe('/#/Components/Button');
 	});
 
-	it('should return an absolute home URL', () => {
-		const result = getUrl({ absolute: true }, loc);
-		expect(result).toBe('http://example.com/styleguide/');
+	test('encode parts of URL', () => {
+		const result = getPageUrl(['Components', '@foo/bar-documentation']);
+		expect(result).toBe('/#/Components/%40foo%2Fbar-documentation');
+	});
+});
+
+describe('getIsolatedUrl', () => {
+	test('page URL', () => {
+		const result = getIsolatedUrl(['Components', 'Button']);
+		expect(result).toBe('/#!/Components/Button');
 	});
 
-	it('should return an anchor URL', () => {
-		const result = getUrl({ name, slug, anchor: true }, loc);
-		expect(result).toBe('/styleguide/#foobar');
+	test('page URL with example index (number)', () => {
+		const result = getIsolatedUrl(['Components', 'Button'], 11);
+		expect(result).toBe('/#!/Components/Button//11');
 	});
 
-	it('should return an absolute anchor URL', () => {
-		const result = getUrl({ name, slug, anchor: true, absolute: true }, loc);
-		expect(result).toBe('http://example.com/styleguide/#foobar');
+	test('page URL with example index (number, zero)', () => {
+		const result = getIsolatedUrl(['Components', 'Button'], 0);
+		expect(result).toBe('/#!/Components/Button//0');
 	});
 
-	it('should return an isolated URL', () => {
-		const result = getUrl({ name, slug, isolated: true }, loc);
-		expect(result).toBe('/styleguide/#!/Components/FooBar');
+	test('page URL with example index (string)', () => {
+		const result = getIsolatedUrl(['Components', 'Button'], 'pizza');
+		expect(result).toBe('/#!/Components/Button//pizza');
 	});
 
-	it('should return an absolute isolated URL', () => {
-		const result = getUrl({ name, slug, isolated: true, absolute: true }, loc);
-		expect(result).toBe('http://example.com/styleguide/#!/Components/FooBar');
+	test('encode parts of URL', () => {
+		const result = getIsolatedUrl(['Components', '@foo/bar-documentation']);
+		expect(result).toBe('/#!/Components/%40foo%2Fbar-documentation');
+	});
+});
+
+describe('getSectionUrl', () => {
+	test('page URL', () => {
+		const result = getSectionUrl({
+			pagePerSection: true,
+			slug: 'button',
+			hashPath: ['Components', 'Button'],
+		});
+		expect(result).toBe('/#/Components/Button');
 	});
 
-	it('should return an isolated example URL', () => {
-		const result = getUrl({ name, slug, example: 3, isolated: true }, loc);
-		expect(result).toBe('/styleguide/#!/Components/FooBar/3');
-	});
-
-	it('should return an isolated example for a HashedURL', () => {
-		const result = getUrl({ name, slug, example: 0, isolated: true }, locHashedURL);
-		expect(result).toBe('/styleguide/#!/FooBar/0');
-	});
-
-	it('should return an isolated example=0 URL', () => {
-		const result = getUrl({ name, slug, example: 0, isolated: true }, loc);
-		expect(result).toBe('/styleguide/#!/Components/FooBar/0');
-	});
-
-	it('should return an absolute isolated example URL', () => {
-		const result = getUrl({ name, slug, example: 3, isolated: true, absolute: true }, loc);
-		expect(result).toBe('http://example.com/styleguide/#!/Components/FooBar/3');
-	});
-
-	it('should return a nochrome URL', () => {
-		const result = getUrl({ name, slug, nochrome: true }, loc);
-		expect(result).toBe('/styleguide/?nochrome#!/Components/FooBar');
-	});
-
-	it('should return an absolute nochrome URL', () => {
-		const result = getUrl({ name, slug, nochrome: true, absolute: true }, loc);
-		expect(result).toBe('http://example.com/styleguide/?nochrome#!/Components/FooBar');
-	});
-
-	it('should return a route path', () => {
-		const result = getUrl({ name, slug, hashPath: ['Documentation'] }, loc);
-		expect(result).toBe('/styleguide/#/Documentation/FooBar');
-	});
-
-	it('should return a route path with encoded name if name has inappropriate symbols', () => {
-		const result = getUrl({ name: '@foo/components', slug, hashPath: ['Documentation'] }, loc);
-		expect(result).toBe('/styleguide/#/Documentation/%40foo%2Fcomponents');
-	});
-
-	it('should return a route path with encoded name if sections (hashPath) has inappropriate symbols', () => {
-		expect(
-			getUrl({ name: '@foo/components', slug, hashPath: ['@foo/bar-documentation'] }, loc)
-		).toBe('/styleguide/#/%40foo%2Fbar-documentation/%40foo%2Fcomponents');
-
-		expect(
-			getUrl(
-				{
-					name: '@foo/components',
-					slug,
-					hashPath: ['@foo/bar-documentation', '@foo/bar-activations-section'],
-				},
-				loc
-			)
-		).toBe(
-			'/styleguide/#/%40foo%2Fbar-documentation/%40foo%2Fbar-activations-section/%40foo%2Fcomponents'
-		);
-	});
-
-	it('should return a route path with a param id=foobar', () => {
-		const result = getUrl({ name, slug, hashPath: ['Documentation'], useSlugAsIdParam: true }, loc);
-		expect(result).toBe('/styleguide/#/Documentation?id=foobar');
-	});
-
-	it('should return a param id=foobar', () => {
-		const result = getUrl({ name, slug, takeHash: true, useSlugAsIdParam: true }, loc);
-		expect(result).toBe('/styleguide/#/Components?id=foobar');
-	});
-
-	it('should return to param id = foobar even if the hash has parameters', () => {
-		const result = getUrl(
-			{ name, slug, takeHash: true, useSlugAsIdParam: true },
-			{
-				...loc,
-				hash: '#/Components?foo=foobar',
-			}
-		);
-		expect(result).toBe('/styleguide/#/Components?id=foobar');
+	test('hash URL', () => {
+		const result = getSectionUrl({
+			pagePerSection: false,
+			slug: 'button',
+			hashPath: ['Components', 'Button'],
+		});
+		expect(result).toBe('#button');
 	});
 });

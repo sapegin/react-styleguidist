@@ -7,18 +7,25 @@ import Context from 'rsg-components/Context';
 
 interface PreviewProps {
 	code: string;
-	evalInContext(code: string): () => any;
+	documentScope: Record<string, unknown>;
+	exampleScope: Record<string, unknown>;
 }
 
 interface PreviewState {
 	error: string | null;
 }
 
+const cleanErrorMessage = (message: string): string =>
+	message.replace('bound evalInContext(Example)(...): ', '');
+
 export default class Preview extends Component<PreviewProps, PreviewState> {
 	public static propTypes = {
 		code: PropTypes.string.isRequired,
-		evalInContext: PropTypes.func.isRequired,
+		documentScope: PropTypes.object.isRequired,
+		exampleScope: PropTypes.object.isRequired,
 	};
+
+	// TODO: How to type it?
 	public static contextType = Context;
 
 	private mountNode: Element | null = null;
@@ -63,24 +70,25 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
 			error: null,
 		});
 
-		const { code } = this.props;
+		const { code, documentScope, exampleScope } = this.props;
 		if (!code) {
 			return;
 		}
 
-		const wrappedComponent: React.FunctionComponentElement<any> = (
+		const exampleApp = (
 			<ReactExample
 				code={code}
-				evalInContext={this.props.evalInContext}
-				onError={this.handleError}
+				documentScope={documentScope}
+				exampleScope={exampleScope}
 				compileExample={this.context.config.compileExample}
+				onError={this.handleError}
 			/>
 		);
 
 		window.requestAnimationFrame(() => {
 			// this.unmountPreview();
 			try {
-				ReactDOM.render(wrappedComponent, this.mountNode);
+				ReactDOM.render(exampleApp, this.mountNode);
 			} catch (err) {
 				this.handleError(err);
 			}
@@ -91,7 +99,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
 		this.unmountPreview();
 
 		this.setState({
-			error: err.toString(),
+			error: cleanErrorMessage(err.toString()),
 		});
 
 		console.error(err); // eslint-disable-line no-console

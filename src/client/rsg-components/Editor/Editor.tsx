@@ -2,27 +2,25 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Styled, { JssInjectedProps } from 'rsg-components/Styled';
 import SimpleEditor from 'react-simple-code-editor';
-import { highlight as prismHighlight, languages } from 'prismjs';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-jsx';
-import { space } from '../../styles/theme';
-import prismTheme from '../../styles/prismTheme';
+import MdxHighlight from 'rsg-components/mdx/MdxHighlight';
 import * as Rsg from '../../../typings';
 
-const highlight = (code: string) => prismHighlight(code, languages.jsx, 'jsx');
+const highlight = (code: string) => <MdxHighlight className="language-jsx">{code}</MdxHighlight>;
 
-const styles = ({ fontFamily, fontSize, color, borderRadius }: Rsg.Theme) => ({
+const styles = ({ space, fontFamily, fontSize, color, borderRadius }: Rsg.Theme) => ({
 	root: {
+		// Use `important` to override inline styles in react-simple-code-editor
+		padding: `${space[2]}px !important`,
 		fontFamily: fontFamily.monospace,
 		fontSize: fontSize.small,
 		background: color.codeBackground,
 		borderRadius,
+		lineHeight: 1.5,
+		tabSize: 2,
 		'& textarea': {
+			padding: 'inherit !important',
 			isolate: false,
 			transition: 'all ease-in-out .1s',
-			// important to override inline styles in react-simple-code-editor
 			border: `1px ${color.border} solid !important`,
 			borderRadius,
 		},
@@ -32,7 +30,6 @@ const styles = ({ fontFamily, fontSize, color, borderRadius }: Rsg.Theme) => ({
 			borderColor: `${color.link} !important`,
 			boxShadow: [[0, 0, 0, 2, color.focus]],
 		},
-		...prismTheme({ color }),
 	},
 });
 
@@ -82,9 +79,6 @@ export class Editor extends Component<EditorProps> {
 				value={this.state.code}
 				onValueChange={this.handleChange}
 				highlight={highlight}
-				// Padding should be passed via a prop (not CSS) for a proper
-				// cursor position calculation
-				padding={space[2]}
 			/>
 		);
 	}

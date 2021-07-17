@@ -11,6 +11,7 @@ import forEach from 'lodash/forEach';
 import isFunction from 'lodash/isFunction';
 import StyleguidistOptionsPlugin from './utils/StyleguidistOptionsPlugin';
 import mergeWebpackConfig from './utils/mergeWebpackConfig';
+import getWebpackVersion from './utils/getWebpackVersion';
 import * as Rsg from '../typings';
 
 type Mode = Configuration['mode'];
@@ -68,20 +69,51 @@ export default function (config: Rsg.SanitizedStyleguidistConfig, env: Mode): Co
 				'process.env.STYLEGUIDIST_ENV': JSON.stringify(env),
 			}),
 		],
-		module: {
-			rules: [
-				{
-					// Support .mjs modules in dependencies, like Sucrase
-					test: /\.mjs$/,
-					include: /node_modules/,
-					type: 'javascript/auto',
-				},
-			],
-		},
 		performance: {
 			hints: false,
 		},
 	};
+
+	const webpackVersion = getWebpackVersion();
+	if (webpackVersion >= 5) {
+		webpackConfig = merge(webpackConfig, {
+			plugins: [
+				// webpack 5 no longer polyfills `process`
+				new webpack.ProvidePlugin({
+					process: 'process/browser',
+				}),
+			],
+			module: {
+				rules: [
+					{
+						// Support .mjs modules in dependencies, like Sucrase
+						test: /\.m?js$/,
+						include: /node_modules/,
+						type: 'javascript/auto',
+						resolve: {
+							// Avoid errors about imports without extension in webpack 5
+							// https://github.com/webpack/webpack/issues/11467
+							// @ts-ignore
+							fullySpecified: false,
+						},
+					},
+				],
+			},
+		});
+	} else {
+		webpackConfig = merge(webpackConfig, {
+			module: {
+				rules: [
+					{
+						// Support .mjs modules in dependencies, like Sucrase
+						test: /\.m?js$/,
+						include: /node_modules/,
+						type: 'javascript/auto',
+					},
+				],
+			},
+		});
+	}
 
 	if (isProd) {
 		const minimizer = new TerserPlugin({

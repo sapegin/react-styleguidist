@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Markdown Hr should render a horizontal rule 1`] = `
-<hr
-  class="rsg--hr-0"
-/>
-`;

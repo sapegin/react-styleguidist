@@ -1,37 +1,44 @@
 import React from 'react';
-import { render, within } from '@testing-library/react';
+import { render, within } from '../../test';
 import StyleGuide, { StyleGuideProps } from './StyleGuide';
 import slots from '../slots';
-import { DisplayModes } from '../../consts';
 import * as Rsg from '../../../typings';
 
 const sections: Rsg.Section[] = [
 	{
 		exampleMode: 'collapse',
 		usageMode: 'collapse',
+		name: 'Section',
+		visibleName: 'Section',
 		slug: 'section',
+		hashPath: ['Section'],
+		sections: [],
 		components: [
 			{
 				name: 'Foo',
 				visibleName: 'Foo',
-				href: '#foo',
+				hashPath: ['Foo'],
 				slug: 'foo',
 				pathLine: 'components/foo.js',
 				filepath: 'components/foo.js',
 				props: {
-					description: 'Foo foo',
+					displayName: 'Foo',
 				},
+				metadata: {},
+				hasExamples: false,
 			},
 			{
 				name: 'Bar',
 				visibleName: 'Bar',
-				href: '#bar',
+				hashPath: ['Bar'],
 				slug: 'bar',
 				pathLine: 'components/bar.js',
 				filepath: 'components/bar.js',
 				props: {
-					description: 'Bar bar',
+					displayName: 'Bar',
 				},
+				metadata: {},
+				hasExamples: false,
 			},
 		],
 	},
@@ -41,6 +48,7 @@ const config = {
 	title: 'HelloStyleGuide',
 	version: '1.0.0',
 	showSidebar: true,
+	pagePerSection: false,
 } as Rsg.ProcessedStyleguidistConfig;
 
 const defaultProps: StyleGuideProps = {
@@ -51,6 +59,7 @@ const defaultProps: StyleGuideProps = {
 	sections: [],
 	allSections: [],
 	slots: slots(),
+	isolated: false,
 	patterns: ['components/**.js'],
 };
 
@@ -95,27 +104,16 @@ test('should not render a sidebar if showSidebar is false', () => {
 	expect(queryByTestId('sidebar')).not.toBeInTheDocument();
 });
 
-test('should not render a sidebar in isolation mode', () => {
+test('should not render a sidebar in isolated mode', () => {
 	const { queryByTestId } = render(
-		<StyleGuide
-			{...defaultProps}
-			sections={sections}
-			allSections={sections}
-			displayMode={DisplayModes.component}
-		/>
+		<StyleGuide {...defaultProps} sections={sections} allSections={sections} isolated />
 	);
 	expect(queryByTestId('sidebar')).not.toBeInTheDocument();
 });
 
 test('should render a sidebar if pagePerSection is true', () => {
 	const { getByTestId } = render(
-		<StyleGuide
-			{...defaultProps}
-			sections={sections}
-			allSections={sections}
-			displayMode={DisplayModes.all}
-			pagePerSection
-		/>
+		<StyleGuide {...defaultProps} sections={sections} allSections={sections} pagePerSection />
 	);
 	expect(getByTestId('sidebar')).toBeInTheDocument();
 });

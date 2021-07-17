@@ -27,24 +27,3 @@ exports[`SectionHeading render a section heading 1`] = `
   </a>
 </h2>
 `;
-
-exports[`SectionHeading should forward slot properties to the toolbar 1`] = `
-<Styled(SectionHeading)
-  depth={2}
-  href="/#section"
-  id="section"
-  toolbar={
-    <Slot
-      name="slot"
-      props={
-        Object {
-          "bar": "baz",
-          "foo": 1,
-        }
-      }
-    />
-  }
->
-  A Section
-</Styled(SectionHeading)>
-`;

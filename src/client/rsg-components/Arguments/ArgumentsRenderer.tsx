@@ -36,7 +36,7 @@ export const ArgumentsRenderer: React.FunctionComponent<ArgumentsProps> = ({
 					<Heading level={5}>Arguments</Heading>
 				</div>
 			)}
-			{args.map(arg => (
+			{args.map((arg) => (
 				<Argument key={arg.name} {...arg} />
 			))}
 		</div>
@@ -45,13 +45,7 @@ export const ArgumentsRenderer: React.FunctionComponent<ArgumentsProps> = ({
 
 ArgumentsRenderer.propTypes = {
 	classes: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
-	args: PropTypes.arrayOf(
-		PropTypes.shape({
-			name: PropTypes.string.isRequired,
-			type: PropTypes.object,
-			description: PropTypes.string,
-		}).isRequired
-	).isRequired,
+	args: PropTypes.array.isRequired,
 	heading: PropTypes.bool,
 };
 

@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - run: npm ci
+      - run: npm run compile
+
+      - name: Build all examples
+        run: |
+          npm run build:basic
+          npm run build:customised
+          npm run build:sections
+
+      - name: Check that examples really works - no JS errors on load
+        run: |
+          npm run test:browser:pre
+          npm run test:browser:basic
+          npm run test:browser:customised
+          npm run test:browser:sections
+
+      - name: Run Cypress tests
+        run: |
+          npm run test:cypress:pre
+          npm run test:cypress:startServer &
+          npm run test:cypress:startServer:post
+          npm run test:cypress:run
+
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version:
+          - '16'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: npm ci
+      - run: npm run test:jest -- --runInBand

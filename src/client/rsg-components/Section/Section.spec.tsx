@@ -1,41 +1,45 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import Section from 'rsg-components/Section';
-import Context from '../Context';
-import slots from '../slots';
-import { DisplayModes } from '../../consts';
+import { render, Provider } from '../../test';
+import * as Rsg from '../../../typings';
 
-const context = {
-	config: {
-		pagePerSection: false,
-	},
-	displayMode: DisplayModes.all,
-	slots: slots(),
-} as any;
-
-const Provider = (props: any) => <Context.Provider value={context} {...props} />;
+const section: Rsg.Section = {
+	name: 'A',
+	visibleName: 'A',
+	slug: 'a',
+	hashPath: ['A'],
+	usageMode: 'collapse',
+	exampleMode: 'collapse',
+	sections: [],
+	components: [],
+};
 
 test('should render nested sections', () => {
 	const { getByTestId } = render(
-		<Provider>
-			<Section
-				section={{
-					name: 'Outer section',
-					slug: 'outer-section',
-					usageMode: 'collapse',
-					exampleMode: 'collapse',
-					sections: [
-						{
-							name: 'Nested section',
-							slug: 'nested-section',
-							usageMode: 'collapse',
-							exampleMode: 'collapse',
-						},
-					],
-				}}
-				depth={3}
-			/>
-		</Provider>
+		<Section
+			section={{
+				name: 'Outer section',
+				visibleName: 'Outer section',
+				slug: 'outer-section',
+				hashPath: ['Outer-section'],
+				usageMode: 'collapse',
+				exampleMode: 'collapse',
+				components: [],
+				sections: [
+					{
+						name: 'Nested section',
+						visibleName: 'Nested section',
+						slug: 'nested-section',
+						hashPath: ['Outer-secton', 'Nested-section'],
+						usageMode: 'collapse',
+						exampleMode: 'collapse',
+						sections: [],
+						components: [],
+					},
+				],
+			}}
+			depth={3}
+		/>
 	);
 	expect(getByTestId('section-outer-section')).toContainElement(
 		getByTestId('section-nested-section')
@@ -44,78 +48,60 @@ test('should render nested sections', () => {
 
 test('should render components inside a section', () => {
 	const { getByTestId, getByText } = render(
-		<Provider>
-			<Section
-				section={{
-					name: 'Components',
-					slug: 'components',
-					usageMode: 'collapse',
-					exampleMode: 'collapse',
-					components: [
-						{
-							name: 'Foo',
-							visibleName: 'Foo',
-							slug: 'foo',
-							pathLine: 'components/foo.js',
-							filepath: 'components/foo.js',
-							props: {
-								description: 'Foo foo',
-							},
+		<Section
+			section={{
+				name: 'Components',
+				visibleName: 'Components',
+				slug: 'components',
+				hashPath: ['/#/Compons'],
+				usageMode: 'collapse',
+				exampleMode: 'collapse',
+				sections: [],
+				components: [
+					{
+						name: 'Foo',
+						visibleName: 'Foo',
+						slug: 'foo',
+						hashPath: ['/#o'],
+						pathLine: 'components/foo.js',
+						filepath: 'components/foo.js',
+						props: {
+							displayName: 'Foo',
 						},
-						{
-							name: 'Bar',
-							visibleName: 'Bar',
-							slug: 'bar',
-							pathLine: 'components/bar.js',
-							filepath: 'components/bar.js',
-							props: {
-								description: 'Bar bar',
-							},
+						metadata: {},
+						hasExamples: false,
+					},
+					{
+						name: 'Bar',
+						visibleName: 'Bar',
+						slug: 'bar',
+						hashPath: ['/#r'],
+						pathLine: 'components/bar.js',
+						filepath: 'components/bar.js',
+						props: {
+							displayName: 'Bar',
 						},
-					],
-				}}
-				depth={3}
-			/>
-		</Provider>
+						metadata: {},
+						hasExamples: false,
+					},
+				],
+			}}
+			depth={3}
+		/>
 	);
 	expect(getByTestId('section-components')).toContainElement(getByText('components/foo.js'));
 	expect(getByTestId('section-components')).toContainElement(getByText('components/bar.js'));
 });
 
-test('should not render section in isolation mode by default', () => {
-	const { getByLabelText } = render(
-		<Provider>
-			<Section
-				section={{
-					name: 'A',
-					slug: 'a',
-					usageMode: 'collapse',
-					exampleMode: 'collapse',
-				}}
-				depth={3}
-			/>
-		</Provider>
-	);
+test('should not render section in isolated mode by default', () => {
+	const { getByLabelText } = render(<Section section={section} depth={3} />);
 	expect(getByLabelText(/open isolated/i)).toBeInTheDocument();
 });
 
-test('should render section in isolation mode', () => {
+test('should render section in isolated mode', () => {
 	const { queryByLabelText } = render(
-		<Provider
-			value={{
-				...context,
-				displayMode: DisplayModes.section,
-			}}
-		>
-			<Section
-				section={{
-					name: 'A',
-					slug: 'a',
-					usageMode: 'collapse',
-					exampleMode: 'collapse',
-				}}
-				depth={3}
-			/>
+		<Provider isolated>
+			<Section section={section} depth={3} />
 		</Provider>
 	);
 	expect(queryByLabelText(/open isolated/i)).toBeNull();

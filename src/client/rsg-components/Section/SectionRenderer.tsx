@@ -14,38 +14,40 @@ const styles = ({ space }: Rsg.Theme) => ({
 interface SectionRendererProps extends JssInjectedProps {
 	slug: string;
 	depth: number;
-	name?: string;
+	name: string;
 	description?: string;
 	content?: React.ReactNode;
 	components?: React.ReactNode;
 	sections?: React.ReactNode;
-	isolated?: boolean;
-	pagePerSection?: boolean;
-	[prop: string]: any;
+	isolated: boolean;
+	pagePerSection: boolean;
+	hashPath: string[];
 }
 
-export const SectionRenderer: React.FunctionComponent<SectionRendererProps> = allProps => {
-	const {
-		classes,
-		name,
-		slug,
-		content,
-		components,
-		sections,
-		depth,
-		description,
-		pagePerSection,
-	} = allProps;
-
+export const SectionRenderer: React.FunctionComponent<SectionRendererProps> = ({
+	classes,
+	name,
+	slug,
+	content,
+	components,
+	sections,
+	depth,
+	description,
+	pagePerSection,
+	isolated,
+	hashPath,
+}) => {
 	return (
 		<section className={classes.root} data-testid={`section-${slug}`}>
 			{name && (
 				<SectionHeading
-					depth={depth}
-					id={slug}
-					slotName="sectionToolbar"
+					name={name}
+					slug={slug}
+					hashPath={hashPath}
 					pagePerSection={pagePerSection}
-					slotProps={allProps}
+					isolated={isolated}
+					depth={depth}
+					slotName="sectionToolbar"
 				>
 					{name}
 				</SectionHeading>
@@ -60,15 +62,15 @@ export const SectionRenderer: React.FunctionComponent<SectionRendererProps> = al
 
 SectionRenderer.propTypes = {
 	classes: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
-	name: PropTypes.string,
+	name: PropTypes.string.isRequired,
 	description: PropTypes.string,
 	slug: PropTypes.string.isRequired,
 	content: PropTypes.node,
 	components: PropTypes.node,
 	sections: PropTypes.node,
-	isolated: PropTypes.bool,
+	isolated: PropTypes.bool.isRequired,
 	depth: PropTypes.number.isRequired,
-	pagePerSection: PropTypes.bool,
+	pagePerSection: PropTypes.bool.isRequired,
 };
 
 export default Styled<SectionRendererProps>(styles)(SectionRenderer);

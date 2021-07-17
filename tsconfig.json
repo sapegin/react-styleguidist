@@ -1,21 +1,21 @@
 {
-	"compilerOptions": {
-		"target": "esnext",
-		"module": "es2015",
-		"baseUrl": ".",
-		"moduleResolution": "node",
-		"jsx": "react",
-		"strict": true,
-		"esModuleInterop": true,
-		"noUnusedLocals": true,
-		"allowSyntheticDefaultImports": true,
-		"outDir": "./lib",
-		"lib": ["dom"],
-		"paths": {
-			"rsg-components/*": ["src/client/rsg-components/*"],
-			"rsg-compiler": ["sucrase"]
-		}
-	},
-	"include": ["src"],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "es2015",
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./lib",
+    "lib": ["dom"],
+    "paths": {
+      "rsg-components/*": ["src/client/rsg-components/*"]
+    }
+  },
+  "files": ["dangerfile.ts"],
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

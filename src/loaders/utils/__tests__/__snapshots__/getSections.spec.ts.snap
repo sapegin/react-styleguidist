@@ -5,7 +5,7 @@ Array [
   Object {
     "components": Array [],
     "content": Object {
-      "require": "!!~/src/loaders/examples-loader.js!~/test/components/Button/Readme.md",
+      "require": "!!~/src/loaders/mdx-loader.js!~/test/components/Button/Readme.md",
     },
     "exampleMode": "collapse",
     "href": undefined,
@@ -171,21 +171,7 @@ Array [
     "name": "Ignore",
     "sectionDepth": 0,
     "sections": Array [],
-    "slug": "section-ignore-2",
-    "usageMode": "collapse",
-  },
-  Object {
-    "components": Array [],
-    "content": Object {
-      "content": "Hello World",
-      "type": "markdown",
-    },
-    "exampleMode": "collapse",
-    "href": undefined,
-    "name": "Ignore",
-    "sectionDepth": 0,
-    "sections": Array [],
-    "slug": "section-ignore-3",
+    "slug": "section-ignore-1",
     "usageMode": "collapse",
   },
 ]
@@ -277,7 +263,7 @@ exports[`processSection() should return an object for section with content 1`] =
 Object {
   "components": Array [],
   "content": Object {
-    "require": "!!~/src/loaders/examples-loader.js!~/test/components/Button/Readme.md",
+    "require": "!!~/src/loaders/mdx-loader.js!~/test/components/Button/Readme.md",
   },
   "exampleMode": "collapse",
   "href": undefined,
@@ -285,23 +271,6 @@ Object {
   "sectionDepth": 0,
   "sections": Array [],
   "slug": "section-readme",
-  "usageMode": "collapse",
-}
-`;
-
-exports[`processSection() should return an object for section with content as function 1`] = `
-Object {
-  "components": Array [],
-  "content": Object {
-    "content": "Hello World",
-    "type": "markdown",
-  },
-  "exampleMode": "collapse",
-  "href": undefined,
-  "name": "Ignore",
-  "sectionDepth": 0,
-  "sections": Array [],
-  "slug": "section-ignore-1",
   "usageMode": "collapse",
 }
 `;

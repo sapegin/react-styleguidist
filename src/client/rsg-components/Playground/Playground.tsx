@@ -7,21 +7,34 @@ import Slot from 'rsg-components/Slot';
 import PlaygroundRenderer from 'rsg-components/Playground/PlaygroundRenderer';
 import Context from 'rsg-components/Context';
 import { EXAMPLE_TAB_CODE_EDITOR } from '../slots';
-import { DisplayModes, ExampleModes } from '../../consts';
+import { getIsolatedUrl } from '../../utils/getUrl';
+import { ExampleModes } from '../../consts';
+import * as Rsg from '../../../typings';
+
+const getIsolatedButtonUrl = ({
+	isolated,
+	hashPath,
+	exampleIndex,
+}: {
+	isolated: boolean;
+	hashPath: string[];
+	exampleIndex?: number | string;
+}) => {
+	if (isolated) {
+		return getIsolatedUrl(hashPath);
+	} else {
+		return getIsolatedUrl(hashPath, exampleIndex);
+	}
+};
 
 interface PlaygroundProps {
-	evalInContext(code: string): () => any;
-	index: number;
-	name?: string;
-	exampleMode?: string;
+	componentName: string;
+	componentHashPath: string[];
+	exampleMode: string;
 	code: string;
-	settings: {
-		showcode?: boolean;
-		noeditor?: boolean;
-		padded?: boolean;
-		// TODO: better typing for this
-		props?: any;
-	};
+	documentScope: Record<string, unknown>;
+	exampleScope: Record<string, unknown>;
+	modifiers: Rsg.Modifiers;
 }
 
 interface PlaygroundState {
@@ -32,21 +45,18 @@ interface PlaygroundState {
 
 class Playground extends Component<PlaygroundProps, PlaygroundState> {
 	public static propTypes = {
-		code: PropTypes.string.isRequired,
-		evalInContext: PropTypes.func.isRequired,
-		index: PropTypes.number.isRequired,
-		name: PropTypes.string.isRequired,
+		componentName: PropTypes.string.isRequired,
+		componentHashPath: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 		exampleMode: PropTypes.string.isRequired,
-		settings: PropTypes.object,
-	};
-
-	public static defaultProps = {
-		settings: {},
+		code: PropTypes.string.isRequired,
+		documentScope: PropTypes.object.isRequired,
+		exampleScope: PropTypes.object.isRequired,
+		modifiers: PropTypes.object.isRequired,
 	};
 
 	public static contextType = Context;
 
-	private handleChange = debounce(code => {
+	private handleChange = debounce((code) => {
 		this.setState({
 			code,
 		});
@@ -75,33 +85,45 @@ class Playground extends Component<PlaygroundProps, PlaygroundState> {
 	}
 
 	private getInitialActiveTab(): boolean {
+		const { showcode } = this.props.modifiers;
 		const expandCode = this.props.exampleMode === ExampleModes.expand;
-		return this.props.settings.showcode !== undefined ? this.props.settings.showcode : expandCode;
+		return showcode !== undefined ? showcode : expandCode;
 	}
 
 	private handleTabChange = (name: string) => {
-		this.setState(state => ({
+		this.setState((state) => ({
 			activeTab: state.activeTab !== name ? name : undefined,
 		}));
 	};
 
 	public render() {
 		const { code, activeTab } = this.state;
-		const { evalInContext, index, name, settings, exampleMode } = this.props;
-		const { displayMode } = this.context;
+		const {
+			documentScope,
+			exampleScope,
+			componentName,
+			componentHashPath,
+			modifiers,
+			exampleMode,
+		} = this.props;
+		const { isolated, exampleIndex } = this.context;
 		const isExampleHidden = exampleMode === ExampleModes.hide;
-		const isEditorHidden = settings.noeditor || isExampleHidden;
-		const preview = <Preview code={code} evalInContext={evalInContext} />;
+		const isEditorHidden = modifiers.noeditor || isExampleHidden;
+		const isolatedButton = isolated && exampleIndex !== undefined;
+
+		const preview = (
+			<Preview code={code} documentScope={documentScope} exampleScope={exampleScope} />
+		);
 
 		return isEditorHidden ? (
 			<Para>{preview}</Para>
 		) : (
 			<PlaygroundRenderer
-				name={name}
-				exampleIndex={index}
-				padded={!!settings.padded}
+				componentName={componentName}
+				exampleIndex={modifiers.index}
+				padded={!!modifiers.padded}
 				preview={preview}
-				previewProps={settings.props || {}}
+				previewClassName={modifiers['preview-class']}
 				tabButtons={
 					<Slot
 						name="exampleTabButtons"
@@ -114,14 +136,22 @@ class Playground extends Component<PlaygroundProps, PlaygroundState> {
 						name="exampleTabs"
 						active={activeTab}
 						onlyActive
-						// evalInContext passed through to support custom slots that eval code
-						props={{ code, onChange: this.handleChange, evalInContext }}
+						props={{ code, onChange: this.handleChange }}
 					/>
 				}
 				toolbar={
 					<Slot
 						name="exampleToolbar"
-						props={{ name, isolated: displayMode === DisplayModes.example, example: index }}
+						props={{
+							name: componentName,
+							href: getIsolatedButtonUrl({
+								isolated: isolatedButton,
+								hashPath: componentHashPath,
+								exampleIndex: modifiers.index,
+							}),
+							exampleIndex: modifiers.index,
+							isolated: isolatedButton,
+						}}
 					/>
 				}
 			/>
