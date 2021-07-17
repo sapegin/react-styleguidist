@@ -73,9 +73,9 @@ const examples = [
 		image: '/img/example2.png',
 	},
 	{
-		title: 'Everydayhero Constructicon',
-		href: 'https://everydayhero.github.io/constructicon/',
-		image: '/img/example3.png',
+		title: 'Elementz',
+		href: 'https://elementz.style',
+		image: 'https://elementz.style/showcase_white.png'
 	},
 	{
 		title: 'Re-bulma',

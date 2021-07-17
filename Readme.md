@@ -39,6 +39,7 @@ React Styleguidist is a component development environment with hot reloaded dev 
 
 Real projects using React Styleguidist:
 
+- [Elementz](https://elementz.style/)
 - [Rumble Charts](https://rumble-charts.github.io/rumble-charts/)
 - [better-react-spinkit](http://better-react-spinkit.benjamintatum.com/)
 - [Semantic UI Components for React](https://hallister.github.io/semantic-react/)
