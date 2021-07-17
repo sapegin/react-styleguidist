@@ -14,6 +14,7 @@ import './dependencies/deepfreeze';
 import './dependencies/is-directory';
 import './dependencies/q-i';
 import './dependencies/to-ast';
+import './dependencies/prismjs-components-index';
 
 export * from './RsgComponent';
 export * from './RsgExample';

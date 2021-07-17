@@ -13,6 +13,7 @@ import getSections from './utils/getSections';
 import filterComponentsWithExample from './utils/filterComponentsWithExample';
 import slugger from './utils/slugger';
 import resolveESModule from './utils/resolveESModule';
+import { getHighlightCodeLanguages } from './utils/highlightCode';
 import * as Rsg from '../typings';
 
 const logger = createLogger('rsg');
@@ -44,6 +45,9 @@ export function pitch(this: Rsg.StyleguidistLoaderContext) {
 	slugger.reset();
 
 	const config = this._styleguidist;
+
+	// get highlight code languages. Array of languages that allow you to decide which syntax highlighter to add
+	getHighlightCodeLanguages(config.highlightCodeLanguages);
 
 	let sections = getSections(config.sections, config);
 	if (config.skipComponentsWithoutExample) {

@@ -88,6 +88,11 @@ const configSchema: Record<StyleguidistConfigKey, ConfigSchemaOptions<Rsg.Styleg
 	contextDependencies: {
 		type: 'array',
 	},
+	highlightCodeLanguages: {
+		type: 'array',
+		default: [],
+		example: ['java', 'ruby'],
+	},
 	configureServer: {
 		type: 'function',
 	},

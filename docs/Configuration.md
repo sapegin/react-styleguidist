@@ -78,6 +78,22 @@ module.exports = {
 }
 ```
 
+## `highlightCodeLanguages`
+
+Type: `String[]`, default: `[]`
+
+Array of languages that allow you to decide which syntax highlighter to add.
+
+By default the following languages are supported.
+
+> atom, bash, clike, css, diff, flow, graphql, html, javascript, js, json, jsx, less, markdown, markup, mathml, md, rss, scss, shell, ssml, svg, ts, tsx, typescript, webmanifest, xml
+
+```javascript
+module.exports = {
+  highlightCodeLanguages: ['java', 'ruby']
+}
+```
+
 ## `configureServer`
 
 Type: `Function`, optional

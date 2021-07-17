@@ -57,7 +57,7 @@ Array [
   },
   Object {
     "content": "\`\`\`jsx
-<span class=\\"token tag\\"><span class=\\"token tag\\"><span class=\\"token punctuation\\">&lt;</span>h2</span><span class=\\"token punctuation\\">></span></span><span class=\\"token plain-text\\">This is Highlighted!</span><span class=\\"token tag\\"><span class=\\"token tag\\"><span class=\\"token punctuation\\">&lt;/</span>h2</span><span class=\\"token punctuation\\">></span></span>
+<h2>This is Highlighted!</h2>
 \`\`\`",
     "type": "markdown",
   },
@@ -135,7 +135,7 @@ This code example should be rendered as a playground:",
     "content": "This should be just highlighted:
 
 \`\`\`jsx
-<span class=\\"token tag\\"><span class=\\"token tag\\"><span class=\\"token punctuation\\">&lt;</span>h4</span><span class=\\"token punctuation\\">></span></span><span class=\\"token plain-text\\">Hello Markdown!</span><span class=\\"token tag\\"><span class=\\"token tag\\"><span class=\\"token punctuation\\">&lt;/</span>h4</span><span class=\\"token punctuation\\">></span></span>
+<h4>Hello Markdown!</h4>
 \`\`\`
 
 This should be highlighted too:

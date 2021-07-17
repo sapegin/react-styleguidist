@@ -24,6 +24,7 @@ interface BaseStyleguidistConfig {
 	configDir: string;
 	context: Record<string, any>;
 	contextDependencies: string[];
+	highlightCodeLanguages: string[];
 	configureServer(server: WebpackDevServer, env: string): string;
 	dangerouslyUpdateWebpackConfig: (server: Configuration, env: string) => Configuration;
 	defaultExample: string | false;
